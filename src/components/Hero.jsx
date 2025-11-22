@@ -28,8 +28,14 @@ const Hero = () => {
                         Gain clarity, gather knowledge, and make confident decisions for your academic journey.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <button className="btn btn-warning"> <CiSearch />  Explore Projects</button>
-                        <button className="btn btn-success"> <FiUpload />Submit your work</button>
+                        <a href="/thesis-finder" className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center justify-center">
+                            <CiSearch className="mr-2" />
+                            Explore Projects
+                        </a>
+                        <a href="/my-work" className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center justify-center">
+                            <FiUpload className="mr-2" />
+                            Submit your work
+                        </a>
                     </div>
                 </div>
             </div>

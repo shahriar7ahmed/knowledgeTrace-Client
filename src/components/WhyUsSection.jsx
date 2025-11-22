@@ -24,7 +24,7 @@ const WhyUsSection = () => {
         ].map((item, idx) => (
           <div
             key={idx}
-            className="card bg-white w-[350px] shadow-md p-7 rounded-xl border-xl border-gray-200
+            className="bg-white w-[350px] shadow-md p-7 rounded-xl border border-gray-200
                        transition-all duration-300 hover:scale-105 hover:-translate-y-1 cursor-pointer"
           >
             <div className="text-green-600 text-5xl mb-4 flex justify-center">

@@ -1,18 +1,15 @@
 import React from 'react';
-import Navbar from '../../components/Navbar';
+import { useProjects } from '../../context/ProjectContext';
 import Hero from '../../components/Hero';
-import WhyUsSection from '../../components/whyUsSection';
+import WhyUsSection from '../../components/WhyUsSection';
 import RecentProject from '../../components/RecentProject';
-import Footer from '../../components/Footer';
 
 const Home = () => {
     return (
         <div>
-           <Navbar></Navbar>
-           <Hero></Hero>
-           <WhyUsSection></WhyUsSection>
-           <RecentProject></RecentProject>
-           <Footer></Footer>
+            <Hero />
+            <WhyUsSection />
+            <RecentProject />
         </div>
     );
 };
