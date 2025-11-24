@@ -6,11 +6,8 @@ import { ProjectProvider } from "../context/ProjectContext";
 import Layout from "../components/Layout";
 
 import Home from "../pages/Home/Home";
-<<<<<<< HEAD
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-=======
 import Login from "../pages/Login/Login";
+import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Profile from "../pages/Profile/Profile";
 import ThesisFinder from "../pages/ThesisFinder/ThesisFinder";
@@ -38,13 +35,13 @@ const createWrappedComponent = (Component, needsAuth = false, needsProjects = fa
 // Create wrapped components
 const HomeWithProviders = createWrappedComponent(Home, false, true);
 const LoginWithProviders = createWrappedComponent(Login, true, false);
+const RegisterWithProviders = createWrappedComponent(Register, true, false);
 const DashboardWithProviders = createWrappedComponent(Dashboard, true, true);
 const ProfileWithProviders = createWrappedComponent(Profile, true, false);
 const ThesisFinderWithProviders = createWrappedComponent(ThesisFinder, false, true);
 const MyWorkWithProviders = createWrappedComponent(MyWork, true, true);
 const ProjectDetailsWithProviders = createWrappedComponent(ProjectDetails, false, true);
 const AdminWithProviders = createWrappedComponent(Admin, true, true);
->>>>>>> fd82944754503e34fe8b55c382c5dec08bfa525d
 
 const router = createBrowserRouter([
   {
@@ -79,18 +76,10 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminWithProviders />,
   },
-<<<<<<< HEAD
-  {
-    path: "/login",
-    element: <Login />,
-  },
   {
     path: "/register",
-    element: <Register />,
+    element: <RegisterWithProviders />,
   },
-
-=======
->>>>>>> fd82944754503e34fe8b55c382c5dec08bfa525d
 ]);
 
 export default router;

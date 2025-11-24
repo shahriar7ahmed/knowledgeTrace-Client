@@ -1,32 +1,39 @@
-import React, { use,  useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const {createUser ,setLoading} = use(AuthContext);
+    const { createUser, setLoading } = useContext(AuthContext);
 
-    const handleRegister = (e) => {
-
-        
+    const handleRegister = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        
         // Registration logic here
         const form = e.target;
         const name = form[0].value;
         const email = form[1].value;
         const password = form[2].value;
         console.log("Registering:", { name, email, password });
-        // create user 
-        createUser(email, password)
-        .then(result =>{
-            const loggedUser = result.user;
-            console.log(loggedUser);
-        })
-        .catch(error =>{
-            console.log(error.message);
-        })
-        .finally(() => setLoading(false));
+        
+        try {
+            // create user with name
+            const result = await createUser(email, password, name);
+            if (result.success) {
+                console.log("User created:", result.user);
+                // Optionally redirect to login or dashboard
+            } else {
+                console.error("Registration failed:", result.error);
+                alert(result.error || "Registration failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert(error.message || "An error occurred during registration.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (

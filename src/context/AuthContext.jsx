@@ -1,4 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase/firebase.init';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile
+} from 'firebase/auth';
 
 export const AuthContext = createContext();
 
@@ -15,97 +25,84 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Monitor Firebase auth state
   useEffect(() => {
-    const savedUser = localStorage.getItem('knowledgetrace_user');
-    if (savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const userData = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+        };
         setUser(userData);
         setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Error parsing saved user data:', error);
+        localStorage.setItem('knowledgetrace_user', JSON.stringify(userData));
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
         localStorage.removeItem('knowledgetrace_user');
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Placeholder login function (will connect to backend later)
+  // Firebase login function
   const login = async (email, password) => {
     try {
-      // Placeholder API call
-      // const response = await fetch('/api/auth/login', { ... });
-      
-      // For now, create a mock user
-      const mockUser = {
-        id: Date.now(),
-        email: email || 'user@example.com',
-        name: 'John Doe',
-        isAdmin: false,
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      localStorage.setItem('knowledgetrace_user', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, error: error.message };
     }
   };
 
-  // Placeholder Google OAuth login
+  // Firebase Google OAuth login
   const loginWithGoogle = async () => {
     try {
-      // Placeholder API call
-      // const response = await fetch('/api/auth/google', { ... });
-      
-      // Mock Google OAuth user
-      const mockUser = {
-        id: Date.now(),
-        email: 'user@gmail.com',
-        name: 'Google User',
-        isAdmin: false,
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      localStorage.setItem('knowledgetrace_user', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('Google login error:', error);
       return { success: false, error: error.message };
     }
   };
 
-  // Placeholder signup function
+  // Firebase signup function
   const signup = async (email, password, name) => {
     try {
-      // Placeholder API call
-      // const response = await fetch('/api/auth/signup', { ... });
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      const mockUser = {
-        id: Date.now(),
-        email: email || 'newuser@example.com',
-        name: name || 'New User',
-        isAdmin: false,
-      };
+      // Update user profile with display name
+      if (name && userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: name
+        });
+      }
       
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      localStorage.setItem('knowledgetrace_user', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
+      return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('Signup error:', error);
       return { success: false, error: error.message };
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('knowledgetrace_user');
+  // Firebase createUser function (alias for signup, used by Register component)
+  const createUser = async (email, password, name) => {
+    return signup(email, password, name);
+  };
+
+  // Firebase logout function
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const updateUser = (userData) => {
@@ -118,9 +115,11 @@ export const AuthProvider = ({ children }) => {
     user,
     isAuthenticated,
     loading,
+    setLoading,
     login,
     loginWithGoogle,
     signup,
+    createUser,
     logout,
     updateUser,
   };
