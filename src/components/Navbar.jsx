@@ -29,20 +29,25 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
       {/* ---------- Large Screens ---------- */}
-      <div className="hidden lg:flex items-center justify-between px-10 py-4 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg">
-        <h1 className="text-3xl font-bold text-black italic">
-          Knowledge<span className="text-green-700">Trace</span>
-        </h1>
+      <div className="hidden lg:flex items-center justify-between px-6 lg:px-12 py-4 max-w-7xl mx-auto">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+            <span className="text-white font-bold text-xl">K</span>
+          </div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            Knowledge<span className="text-green-600">Trace</span>
+          </h1>
+        </Link>
 
         {/* MENU LINKS */}
-        <ul className="flex gap-10">
+        <ul className="flex items-center gap-1">
           {links.map((link, idx) => (
             <li key={idx}>
               <Link
                 to={link.path}
-                className="cursor-pointer text-black hover:text-green-500 transition text-lg"
+                className="px-4 py-2 rounded-lg text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200 text-sm font-medium"
               >
                 {link.label}
               </Link>
@@ -51,38 +56,39 @@ const Navbar = () => {
         </ul>
 
         {/* AUTH BUTTONS */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
               <Link
                 to="/dashboard"
-                className="px-4 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center gap-2"
+                className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 flex items-center gap-2 text-sm font-medium"
               >
-                <FontAwesomeIcon icon={faUser} />
-                {user?.displayName || user?.name || "Dashboard"}
+                <FontAwesomeIcon icon={faUser} className="text-sm" />
+                <span className="hidden xl:inline">{user?.displayName || user?.name || "Dashboard"}</span>
+                <span className="xl:hidden">Dashboard</span>
               </Link>
               {user?.isAdmin && (
                 <Link
                   to="/admin"
-                  className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition"
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-md hover:shadow-lg text-sm font-medium"
                 >
                   Admin
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition flex items-center gap-2"
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg text-sm font-medium"
               >
-                <FontAwesomeIcon icon={faSignOutAlt} />
-                Logout
+                <FontAwesomeIcon icon={faSignOutAlt} className="text-sm" />
+                <span className="hidden lg:inline">Logout</span>
               </button>
             </>
           ) : (
             <Link
               to="/login"
-              className="px-5 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition flex items-center gap-2"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm"
             >
-              <FontAwesomeIcon icon={faRightToBracket} />
+              <FontAwesomeIcon icon={faRightToBracket} className="text-sm" />
               Login
             </Link>
           )}
@@ -90,76 +96,87 @@ const Navbar = () => {
       </div>
 
       {/* ---------- Small Screens (Logo + Hamburger) ---------- */}
-      <div className="lg:hidden bg-white/20 backdrop-blur-md border-b border-white/20 px-5 py-3 flex justify-between items-center">
-
-        {/* Mobile Logo */}
-        <h1 className="text-2xl font-bold text-black italic">
-          Knowledge<span className="text-green-700">Trace</span>
-        </h1>
+      <div className="lg:hidden px-4 py-3 flex justify-between items-center">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+            <span className="text-white font-bold text-lg">K</span>
+          </div>
+          <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            Knowledge<span className="text-green-600">Trace</span>
+          </h1>
+        </Link>
 
         {/* Menu Toggle Button */}
         <button
           onClick={() => setOpen(!open)}
-          className="text-3xl font-bold text-black"
+          className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-all duration-200"
+          aria-label="Toggle menu"
         >
-          ☰
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {open ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
         </button>
       </div>
 
       {/* ---------- Mobile Dropdown Menu ---------- */}
       {open && (
-        <div className="lg:hidden bg-white/30 backdrop-blur-xl border-b border-white/20 shadow-md py-4">
-          <ul className="flex flex-col items-center gap-4">
+        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg animate-in slide-in-from-top duration-200">
+          <ul className="flex flex-col py-4">
             {links.map((link, idx) => (
               <li key={idx}>
                 <Link
                   to={link.path}
-                  className="cursor-pointer text-black text-lg hover:text-green-600 transition"
+                  className="block px-6 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200 font-medium"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </Link>
               </li>
             ))}
-
-            {/* MOBILE AUTH BUTTONS */}
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className="mt-3 px-6 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition flex items-center gap-2"
-                >
-                  <FontAwesomeIcon icon={faUser} />
-                  Dashboard
-                </Link>
-                {user?.isAdmin && (
+            
+            <div className="border-t border-gray-200 mt-2 pt-2">
+              {isAuthenticated ? (
+                <>
                   <Link
-                    to="/admin"
+                    to="/dashboard"
                     onClick={() => setOpen(false)}
-                    className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
+                    className="block px-6 py-3 text-gray-700 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 font-medium"
                   >
-                    Admin
+                    <FontAwesomeIcon icon={faUser} />
+                    Dashboard
                   </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition flex items-center gap-2"
+                  {user?.isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setOpen(false)}
+                      className="block px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 transition-all duration-200 font-medium"
+                    >
+                      Admin Panel
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-6 py-3 bg-red-500 text-white hover:bg-red-600 transition-all duration-200 flex items-center gap-2 font-medium"
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setOpen(false)}
+                  className="block px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-200 flex items-center gap-2 font-medium mx-4 rounded-lg shadow-md"
                 >
-                  <FontAwesomeIcon icon={faSignOutAlt} />
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/login"
-                onClick={() => setOpen(false)}
-                className="mt-3 px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition flex items-center gap-2"
-              >
-                <FontAwesomeIcon icon={faRightToBracket} />
-                Login
-              </Link>
-            )}
+                  <FontAwesomeIcon icon={faRightToBracket} />
+                  Login
+                </Link>
+              )}
+            </div>
           </ul>
         </div>
       )}

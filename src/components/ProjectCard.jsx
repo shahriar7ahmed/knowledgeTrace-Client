@@ -9,13 +9,13 @@ const ProjectCard = ({ project, showFullDetails = false }) => {
   };
 
   return (
-    <div className="rounded-xl shadow-md bg-white hover:shadow-xl transition-all duration-300 p-6 border border-gray-100">
+    <div className="group rounded-2xl shadow-md bg-white hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
       {/* Project Title */}
-      <h2 className="text-xl font-semibold mb-3 text-gray-800 hover:text-green-600 transition">
+      <h2 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-green-600 transition-colors duration-200">
         {showFullDetails ? (
           project.title
         ) : (
-          <Link to={`/project/${project.id}`} className="hover:underline">
+          <Link to={`/project/${project._id || project.id}`} className="hover:underline">
             {project.title}
           </Link>
         )}
@@ -31,13 +31,13 @@ const ProjectCard = ({ project, showFullDetails = false }) => {
         {project.techStack?.slice(0, 4).map((tech, idx) => (
           <span
             key={idx}
-            className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium"
+            className="px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-xs rounded-lg font-semibold border border-green-200"
           >
             {tech}
           </span>
         ))}
         {project.techStack?.length > 4 && (
-          <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+          <span className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs rounded-lg font-medium">
             +{project.techStack.length - 4} more
           </span>
         )}
@@ -80,24 +80,24 @@ const ProjectCard = ({ project, showFullDetails = false }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-3 mt-4">
+      <div className="flex gap-2 mt-5">
         {project.githubLink && (
           <a
             href={project.githubLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition text-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-200 text-sm font-medium shadow-md hover:shadow-lg"
           >
             <FaGithub />
             GitHub
           </a>
         )}
-        {project.pdfLink && (
+        {project.pdfUrl && (
           <a
-            href={project.pdfLink}
+            href={project.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium shadow-md hover:shadow-lg"
           >
             <FaFilePdf />
             PDF
@@ -105,8 +105,8 @@ const ProjectCard = ({ project, showFullDetails = false }) => {
         )}
         {!showFullDetails && (
           <Link
-            to={`/project/${project.id}`}
-            className="flex-1 text-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+            to={`/project/${project._id || project.id}`}
+            className="flex-1 text-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
           >
             View Details
           </Link>

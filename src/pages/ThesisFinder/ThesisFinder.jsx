@@ -64,16 +64,23 @@ const ThesisFinder = () => {
   const years = [...new Set(projects.map((p) => p.year))].sort((a, b) => b - a);
 
   return (
-    <div className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Thesis <span className="text-green-600">Finder</span>
-            </h1>
-            <p className="text-gray-600">
-              Search and explore completed theses and projects from students
-            </p>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl">🔍</span>
+              </div>
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                  Thesis <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Finder</span>
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Search and explore completed theses and projects from students
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -88,7 +95,7 @@ const ThesisFinder = () => {
           <div className="mb-6 flex items-center justify-between">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md"
             >
               <FaFilter />
               {showFilters ? 'Hide Filters' : 'Show Filters'}
@@ -110,8 +117,8 @@ const ThesisFinder = () => {
 
           {/* Filters Panel */}
           {showFilters && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">Advanced Filters</h3>
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Advanced Filters</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -123,7 +130,7 @@ const ThesisFinder = () => {
                     value={filters.techStack}
                     onChange={handleFilterChange}
                     placeholder="e.g., React, Python"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                   />
                 </div>
 
@@ -137,7 +144,7 @@ const ThesisFinder = () => {
                     value={filters.author}
                     onChange={handleFilterChange}
                     placeholder="Author name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                   />
                 </div>
 
@@ -149,7 +156,7 @@ const ThesisFinder = () => {
                     name="year"
                     value={filters.year}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                   >
                     <option value="">All Years</option>
                     {years.map((year) => (
@@ -170,7 +177,7 @@ const ThesisFinder = () => {
                     value={filters.supervisor}
                     onChange={handleFilterChange}
                     placeholder="Supervisor name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -178,13 +185,13 @@ const ThesisFinder = () => {
               <div className="mt-4 flex gap-3">
                 <button
                   onClick={handleFilterSearch}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                  className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold shadow-md hover:shadow-lg"
                 >
                   Apply Filters
                 </button>
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                  className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-200 font-semibold"
                 >
                   Clear
                 </button>
@@ -205,13 +212,16 @@ const ThesisFinder = () => {
             {displayProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
+                  <ProjectCard key={project._id || project.id} project={project} />
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                <p className="text-xl text-gray-600">No projects found</p>
-                <p className="text-gray-500 mt-2">
+              <div className="bg-white rounded-2xl shadow-md p-12 text-center border border-gray-100">
+                <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-4xl">🔍</span>
+                </div>
+                <p className="text-xl font-bold text-gray-900">No projects found</p>
+                <p className="text-gray-600 mt-2">
                   Try adjusting your search criteria or filters
                 </p>
               </div>

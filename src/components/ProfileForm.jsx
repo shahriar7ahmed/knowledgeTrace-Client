@@ -38,21 +38,29 @@ const ProfileForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Placeholder API call
-      // const response = await fetch('/api/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      const api = await import('../utils/api');
       
-      // For now, update local context
-      updateUser(formData);
-      setIsEditing(false);
-      setMessage('Profile updated successfully!');
-      setTimeout(() => setMessage(''), 3000);
+      // Convert skills string to array if needed
+      const profileData = {
+        ...formData,
+        skills: typeof formData.skills === 'string' 
+          ? formData.skills.split(',').map(s => s.trim()).filter(s => s)
+          : formData.skills,
+      };
+      
+      const result = await api.api.updateUserProfile(profileData);
+      
+      if (result.user) {
+        updateUser(result.user);
+        setIsEditing(false);
+        setMessage('Profile updated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('Error updating profile. Please try again.');
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
-      setMessage('Error updating profile. Please try again.');
+      setMessage(error.message || 'Error updating profile. Please try again.');
     }
   };
 

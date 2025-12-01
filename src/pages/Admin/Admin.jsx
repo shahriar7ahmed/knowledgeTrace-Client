@@ -1,23 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProjects } from '../../context/ProjectContext';
+import { useToast } from '../../components/Toast';
 import { FaCheck, FaTimes, FaEye } from 'react-icons/fa';
 
 const Admin = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading: authLoading } = useAuth();
   const { projects, setProjects } = useProjects();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState({});
 
-  React.useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else if (!user?.isAdmin) {
-      // Redirect non-admin users
-      navigate('/dashboard');
+  // ProtectedRoute handles authentication and admin checks
+  // This component only renders if user is authenticated and is admin
+  // But we'll keep a safety check just in case
+  useEffect(() => {
+    if (!authLoading && (!isAuthenticated || !user?.isAdmin)) {
+      // This shouldn't happen due to ProtectedRoute, but safety check
+      return;
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, authLoading]);
 
   // Placeholder API call to approve/reject project
   const handleStatusChange = async (projectId, newStatus) => {
@@ -46,8 +49,17 @@ const Admin = () => {
     }
   };
 
-  if (!isAuthenticated || !user?.isAdmin) {
-    return null;
+  // ProtectedRoute ensures we only get here if authenticated and admin
+  // But add safety check for loading state
+  if (authLoading || !isAuthenticated || !user?.isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   // Get pending projects

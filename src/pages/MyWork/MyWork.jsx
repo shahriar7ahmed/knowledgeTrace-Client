@@ -77,6 +77,11 @@ const MyWork = () => {
           githubLink: '',
         });
         setPdfFile(null);
+        // Reset file input element
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+          fileInput.value = '';
+        }
         // Redirect after 2 seconds
         setTimeout(() => {
           navigate('/dashboard');
@@ -97,20 +102,27 @@ const MyWork = () => {
   }
 
   return (
-    <div className="bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30 py-12 px-4 pt-24">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Submit Your Work</h1>
-            <p className="text-gray-600 mb-6">
-              Share your thesis or project with the KnowledgeTrace community
-            </p>
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <FaUpload className="text-white text-xl" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Submit Your Work</h1>
+                <p className="text-gray-600 mt-1">
+                  Share your thesis or project with the KnowledgeTrace community
+                </p>
+              </div>
+            </div>
 
             {message && (
               <div
-                className={`mb-6 p-4 rounded-lg ${
+                className={`mb-6 p-4 rounded-xl border ${
                   message.includes('successfully')
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-red-100 text-red-700'
+                    ? 'bg-green-50 text-green-700 border-green-200'
+                    : 'bg-red-50 text-red-700 border-red-200'
                 }`}
               >
                 {message}
@@ -120,7 +132,7 @@ const MyWork = () => {
             <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Project Title <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -128,7 +140,7 @@ const MyWork = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                     placeholder="Enter your project title"
                     required
                   />
@@ -143,7 +155,7 @@ const MyWork = () => {
                     value={formData.abstract}
                     onChange={handleChange}
                     rows="6"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 resize-none"
                     placeholder="Provide a detailed abstract of your project..."
                     required
                   />
@@ -158,7 +170,7 @@ const MyWork = () => {
                     name="techStack"
                     value={formData.techStack}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                     placeholder="e.g., React, Node.js, Python, MongoDB (comma-separated)"
                     required
                   />
@@ -177,7 +189,7 @@ const MyWork = () => {
                       name="supervisor"
                       value={formData.supervisor}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                       placeholder="e.g., Dr. Jane Smith"
                     />
                   </div>
@@ -193,7 +205,7 @@ const MyWork = () => {
                       onChange={handleChange}
                       min="2020"
                       max={new Date().getFullYear() + 1}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                       required
                     />
                   </div>
@@ -208,7 +220,7 @@ const MyWork = () => {
                     name="githubLink"
                     value={formData.githubLink}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
                     placeholder="https://github.com/username/project"
                   />
                 </div>
@@ -245,14 +257,14 @@ const MyWork = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium disabled:opacity-50"
+                  className="flex-1 px-6 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
                 >
                   {loading ? 'Submitting...' : 'Submit Project'}
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate('/dashboard')}
-                  className="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                  className="px-6 py-3.5 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-200 font-semibold"
                 >
                   Cancel
                 </button>
