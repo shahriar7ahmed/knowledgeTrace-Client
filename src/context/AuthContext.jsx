@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/* @refresh reset */
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { auth } from '../firebase/firebase.init';
 import {
   createUserWithEmailAndPassword,
@@ -26,46 +27,145 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const profileFetchRef = useRef(null); // Track ongoing profile fetch
+  const lastProfileFetchRef = useRef(0); // Track last fetch time
 
   // Fetch user profile from backend (includes admin status)
-  const fetchUserProfile = async (uid, email) => {
-    try {
-      const api = await import('../utils/api');
-      const profile = await api.api.getUserProfile();
+  // Added caching and debouncing to prevent rate limiting
+  const fetchUserProfile = async (uid, email, forceRefresh = false) => {
+    const now = Date.now();
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+    
+    // Check cache first (unless force refresh)
+    if (!forceRefresh) {
+      const cachedUser = localStorage.getItem('knowledgetrace_user');
+      const cachedTimestamp = localStorage.getItem('knowledgetrace_user_timestamp');
       
-      return {
-        uid: profile.uid || uid,
-        email: profile.email || email,
-        displayName: profile.displayName || profile.name,
-        name: profile.name || profile.displayName || email?.split('@')[0] || 'User',
-        photoURL: profile.photoURL || null,
-        isAdmin: profile.isAdmin || false,
-        department: profile.department || '',
-        year: profile.year || '',
-        skills: profile.skills || [],
-        github: profile.github || '',
-        linkedin: profile.linkedin || '',
-      };
-    } catch (error) {
-      console.warn('Failed to fetch user profile from backend:', error);
-      // Return basic user data if backend call fails
-      return {
-        uid,
-        email,
-        displayName: null,
-        name: email?.split('@')[0] || 'User',
-        photoURL: null,
-        isAdmin: false,
-      };
+      if (cachedUser && cachedTimestamp) {
+        const cacheAge = now - parseInt(cachedTimestamp, 10);
+        if (cacheAge < CACHE_DURATION) {
+          try {
+            const parsedUser = JSON.parse(cachedUser);
+            // Only use cache if it matches current user
+            if (parsedUser.uid === uid || parsedUser.email === email) {
+              console.log('Using cached user profile');
+              return parsedUser;
+            }
+          } catch (e) {
+            // Invalid cache, continue to fetch
+          }
+        }
+      }
     }
+
+    // Prevent concurrent fetches
+    if (profileFetchRef.current) {
+      return profileFetchRef.current;
+    }
+
+    // Debounce: don't fetch if last fetch was less than 2 seconds ago
+    if (!forceRefresh && (now - lastProfileFetchRef.current) < 2000) {
+      const cachedUser = localStorage.getItem('knowledgetrace_user');
+      if (cachedUser) {
+        try {
+          return JSON.parse(cachedUser);
+        } catch (e) {
+          // Continue to fetch
+        }
+      }
+    }
+
+    lastProfileFetchRef.current = now;
+
+    // Create fetch promise
+    const fetchPromise = (async () => {
+      try {
+        const api = await import('../utils/api');
+        const profile = await api.api.getUserProfile();
+        
+        const userData = {
+          uid: profile.uid || uid,
+          email: profile.email || email,
+          displayName: profile.displayName || profile.name,
+          name: profile.name || profile.displayName || email?.split('@')[0] || 'User',
+          photoURL: profile.photoURL || null,
+          isAdmin: profile.isAdmin || false,
+          department: profile.department || '',
+          year: profile.year || '',
+          skills: profile.skills || [],
+          github: profile.github || '',
+          linkedin: profile.linkedin || '',
+        };
+
+        // Cache the result
+        localStorage.setItem('knowledgetrace_user', JSON.stringify(userData));
+        localStorage.setItem('knowledgetrace_user_timestamp', now.toString());
+        
+        return userData;
+      } catch (error) {
+        console.warn('Failed to fetch user profile from backend:', error);
+        // Return basic user data if backend call fails
+        const fallbackUser = {
+          uid,
+          email,
+          displayName: null,
+          name: email?.split('@')[0] || 'User',
+          photoURL: null,
+          isAdmin: false,
+        };
+        // Cache fallback too (with shorter duration)
+        localStorage.setItem('knowledgetrace_user', JSON.stringify(fallbackUser));
+        localStorage.setItem('knowledgetrace_user_timestamp', (now - CACHE_DURATION + 60000).toString()); // 1 min cache for fallback
+        return fallbackUser;
+      } finally {
+        profileFetchRef.current = null;
+      }
+    })();
+
+    profileFetchRef.current = fetchPromise;
+    return fetchPromise;
   };
 
   // Monitor Firebase auth state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Fetch full user profile from backend (includes admin status)
-        const userData = await fetchUserProfile(firebaseUser.uid, firebaseUser.email);
+        // Check if we have cached data first
+        const cachedUser = localStorage.getItem('knowledgetrace_user');
+        let userData;
+        
+        if (cachedUser) {
+          try {
+            const parsed = JSON.parse(cachedUser);
+            // Use cache if it matches current user
+            if (parsed.uid === firebaseUser.uid || parsed.email === firebaseUser.email) {
+              userData = parsed;
+              // Fetch fresh data in background (non-blocking)
+              fetchUserProfile(firebaseUser.uid, firebaseUser.email, false).then(freshData => {
+                if (freshData.uid === firebaseUser.uid) {
+                  const mergedData = {
+                    ...freshData,
+                    displayName: firebaseUser.displayName || freshData.displayName,
+                    photoURL: firebaseUser.photoURL || freshData.photoURL,
+                  };
+                  setUser(mergedData);
+                  localStorage.setItem('knowledgetrace_user', JSON.stringify(mergedData));
+                }
+              }).catch(() => {
+                // Ignore background fetch errors
+              });
+            } else {
+              // Different user, fetch fresh
+              userData = await fetchUserProfile(firebaseUser.uid, firebaseUser.email, true);
+            }
+          } catch (e) {
+            // Invalid cache, fetch fresh
+            userData = await fetchUserProfile(firebaseUser.uid, firebaseUser.email, false);
+          }
+        } else {
+          // No cache, fetch fresh
+          userData = await fetchUserProfile(firebaseUser.uid, firebaseUser.email, false);
+        }
         
         // Merge with Firebase user data
         userData.displayName = firebaseUser.displayName || userData.displayName;
@@ -74,10 +174,13 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         setIsAuthenticated(true);
         localStorage.setItem('knowledgetrace_user', JSON.stringify(userData));
+        localStorage.setItem('knowledgetrace_user_timestamp', Date.now().toString());
       } else {
         setUser(null);
         setIsAuthenticated(false);
         localStorage.removeItem('knowledgetrace_user');
+        localStorage.removeItem('knowledgetrace_user_timestamp');
+        profileFetchRef.current = null;
       }
       setLoading(false);
     });
@@ -234,6 +337,8 @@ export const AuthProvider = ({ children }) => {
     const updatedUser = { ...user, ...userData };
     setUser(updatedUser);
     localStorage.setItem('knowledgetrace_user', JSON.stringify(updatedUser));
+    // Update cache timestamp to keep it fresh
+    localStorage.setItem('knowledgetrace_user_timestamp', Date.now().toString());
   };
 
   const value = {

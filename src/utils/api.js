@@ -35,8 +35,8 @@ const getAuthToken = async () => {
   }
 };
 
-// Generic API request function
-const apiRequest = async (endpoint, options = {}) => {
+// Generic API request function with retry logic for rate limiting
+const apiRequest = async (endpoint, options = {}, retries = 2) => {
   const token = await getAuthToken();
   
   const headers = {
@@ -56,20 +56,44 @@ const apiRequest = async (endpoint, options = {}) => {
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     
+    // Handle rate limiting - don't retry, just throw error
+    if (response.status === 429) {
+      const errorData = await response.json().catch(() => ({}));
+      const retryAfter = errorData.retryAfter || 60;
+      const error = new Error(errorData.message || 'Too many requests. Please wait a moment and try again.');
+      error.retryAfter = retryAfter;
+      error.status = 429;
+      throw error;
+    }
+    
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Request failed' }));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      const errorMessage = errorData.message || `HTTP error! status: ${response.status}`;
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.code = errorData.code;
+      error.details = errorData.error || errorData;
+      console.error('API Error Details:', {
+        status: response.status,
+        code: errorData.code,
+        message: errorMessage,
+        details: errorData
+      });
+      throw error;
     }
 
     return await response.json();
   } catch (error) {
-    console.error('API request error:', error);
+    // Don't log 429 errors as they're expected
+    if (error.status !== 429) {
+      console.error('API request error:', error);
+    }
     throw error;
   }
 };
 
-// File upload request (for FormData)
-const apiUpload = async (endpoint, formData) => {
+// File upload request (for FormData) with retry logic for rate limiting
+const apiUpload = async (endpoint, formData, retries = 2) => {
   const token = await getAuthToken();
   
   const headers = {};
@@ -84,6 +108,16 @@ const apiUpload = async (endpoint, formData) => {
       body: formData,
     });
     
+    // Handle rate limiting - don't retry, just throw error
+    if (response.status === 429) {
+      const errorData = await response.json().catch(() => ({}));
+      const retryAfter = errorData.retryAfter || 60;
+      const error = new Error(errorData.message || 'Too many requests. Please wait a moment and try again.');
+      error.retryAfter = retryAfter;
+      error.status = 429;
+      throw error;
+    }
+    
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Upload failed' }));
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -91,7 +125,10 @@ const apiUpload = async (endpoint, formData) => {
 
     return await response.json();
   } catch (error) {
-    console.error('API upload error:', error);
+    // Don't log 429 errors as they're expected
+    if (error.status !== 429) {
+      console.error('API upload error:', error);
+    }
     throw error;
   }
 };

@@ -61,6 +61,8 @@ const MyWork = () => {
         author: user?.name || 'Anonymous',
         pdfFile: pdfFile,
         tags: [], // Can be enhanced later
+        // Ensure githubLink is empty string if not provided, not undefined
+        githubLink: formData.githubLink || '',
       };
 
       const result = await submitProject(projectData);
