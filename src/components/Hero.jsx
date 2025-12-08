@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import heroImage from '../assets/hero.jpg';
 import { FiUpload } from "react-icons/fi";
 import { CiSearch } from "react-icons/ci";
@@ -34,20 +35,20 @@ const Hero = () => {
                         Gain clarity, gather knowledge, and make confident decisions for your academic journey.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <a 
-                            href="/thesis-finder" 
+                        <Link 
+                            to="/thesis-finder" 
                             className="group px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center hover:scale-105"
                         >
                             <CiSearch className="mr-2 text-xl" />
                             Explore Projects
-                        </a>
-                        <a 
-                            href="/my-work" 
+                        </Link>
+                        <Link 
+                            to="/my-work" 
                             className="group px-8 py-4 bg-white text-green-600 font-semibold rounded-xl shadow-lg hover:shadow-xl border-2 border-green-600 transition-all duration-300 inline-flex items-center justify-center hover:scale-105 hover:bg-green-50"
                         >
                             <FiUpload className="mr-2 text-xl" />
                             Submit Your Work
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -18,7 +18,6 @@ const Navbar = () => {
 
   const links = [
     { label: "Home", path: "/" },
-    { label: "Recent Projects", path: "/" },
     { label: "Thesis Finder", path: "/thesis-finder" },
     { label: "My Work", path: "/my-work" },
   ];
