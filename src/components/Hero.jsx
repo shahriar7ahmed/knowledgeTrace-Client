@@ -14,7 +14,7 @@ const Hero = () => {
                 <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
             </div>
 
-            {/* Content */}
+            {/* Content my new test */}
             <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="max-w-3xl">
                     <div className="inline-block mb-4 px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
