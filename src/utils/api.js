@@ -176,6 +176,58 @@ export const api = {
   // Admin endpoints
   getPendingProjects: () => apiRequest('/admin/projects/pending'),
   getAllProjects: () => apiRequest('/admin/projects'),
+
+  // Engagement endpoints
+  toggleLike: (projectId) => apiRequest(`/projects/${projectId}/like`, {
+    method: 'POST',
+  }),
+  toggleBookmark: (projectId) => apiRequest(`/projects/${projectId}/bookmark`, {
+    method: 'POST',
+  }),
+  trackView: (projectId) => apiRequest(`/projects/${projectId}/view`, {
+    method: 'POST',
+  }),
+  deleteProject: (projectId) => apiRequest(`/projects/${projectId}`, {
+    method: 'DELETE',
+  }),
+
+  // Comment endpoints
+  addComment: (projectId, content) => apiRequest(`/projects/${projectId}/comments`, {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  }),
+  editComment: (projectId, commentId, content) => apiRequest(`/projects/${projectId}/comments/${commentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ content }),
+  }),
+  deleteComment: (projectId, commentId) => apiRequest(`/projects/${projectId}/comments/${commentId}`, {
+    method: 'DELETE',
+  }),
+  addReply: (projectId, commentId, content) => apiRequest(`/projects/${projectId}/comments/${commentId}/replies`, {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  }),
+  editReply: (projectId, commentId, replyId, content) => apiRequest(`/projects/${projectId}/comments/${commentId}/replies/${replyId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ content }),
+  }),
+  deleteReply: (projectId, commentId, replyId) => apiRequest(`/projects/${projectId}/comments/${commentId}/replies/${replyId}`, {
+    method: 'DELETE',
+  }),
+
+  // Activity endpoints
+  getRecentProjects: () => apiRequest('/activity/recent'),
+  getBookmarkedProjects: () => apiRequest('/activity/bookmarks'),
+
+  // Notification endpoints
+  getNotifications: (page = 1, limit = 20) => apiRequest(`/notifications?page=${page}&limit=${limit}`),
+  markNotificationRead: (notificationId) => apiRequest(`/notifications/${notificationId}/read`, {
+    method: 'PUT',
+  }),
+  markAllNotificationsRead: () => apiRequest('/notifications/read-all', {
+    method: 'PUT',
+  }),
+  getUnreadNotificationCount: () => apiRequest('/notifications/unread-count'),
 };
 
 export default api;

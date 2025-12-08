@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from "../context/AuthContext";
+import NotificationBell from "./NotificationBell";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -59,6 +60,7 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
+              <NotificationBell />
               <Link
                 to="/dashboard"
                 className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 flex items-center gap-2 text-sm font-medium"
@@ -141,6 +143,9 @@ const Navbar = () => {
             <div className="border-t border-gray-200 mt-2 pt-2">
               {isAuthenticated ? (
                 <>
+                  <div className="px-6 py-3">
+                    <NotificationBell />
+                  </div>
                   <Link
                     to="/dashboard"
                     onClick={() => setOpen(false)}

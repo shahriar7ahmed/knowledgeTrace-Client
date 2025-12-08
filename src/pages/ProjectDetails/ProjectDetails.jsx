@@ -1,25 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProjects } from '../../context/ProjectContext';
-import { FaGithub, FaFilePdf, FaCalendarAlt, FaUser, FaGraduationCap, FaArrowLeft } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
+import { useActivity } from '../../context/ActivityContext';
+import { useNotifications } from '../../context/NotificationContext';
+import { FaGithub, FaFilePdf, FaCalendarAlt, FaUser, FaGraduationCap, FaArrowLeft, FaHeart, FaBookmark, FaTrash, FaEye } from 'react-icons/fa';
+import { api } from '../../utils/api';
+import { useToast } from '../../components/Toast';
+import CommentSection from '../../components/CommentSection';
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getProjectById } = useProjects();
+  const { user, isAuthenticated } = useAuth();
+  const { addRecentProject } = useActivity();
+  const { addNotification } = useNotifications();
+  const { showToast } = useToast();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [liked, setLiked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [views, setViews] = useState(0);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const loadProject = async () => {
       setLoading(true);
       const projectData = await getProjectById(id);
-      setProject(projectData);
+      if (projectData) {
+        setProject(projectData);
+        setLiked(projectData.likes?.some(like => like.userId === user?.uid) || false);
+        setBookmarked(projectData.bookmarks?.some(b => b.userId === user?.uid) || false);
+        setLikeCount(projectData.likeCount || projectData.likes?.length || 0);
+        setViews(projectData.views || 0);
+        
+        // Track view
+        if (isAuthenticated && user?.uid) {
+          try {
+            await api.trackView(id);
+            addRecentProject(projectData);
+            setViews(prev => prev + 1);
+          } catch (error) {
+            console.error('Error tracking view:', error);
+          }
+        }
+      }
       setLoading(false);
     };
 
-    loadProject();
-  }, [id, getProjectById]);
+    if (id) {
+      loadProject();
+    }
+  }, [id, getProjectById, user?.uid, isAuthenticated, addRecentProject]);
 
   if (loading) {
     return (
@@ -31,6 +65,87 @@ const ProjectDetails = () => {
       </div>
     );
   }
+
+  const handleLike = async () => {
+    if (!isAuthenticated) {
+      showToast('Please login to like projects', 'info');
+      return;
+    }
+
+    setActionLoading(true);
+    const wasLiked = liked;
+    
+    // Optimistic update
+    setLiked(!liked);
+    setLikeCount(prev => wasLiked ? prev - 1 : prev + 1);
+
+    try {
+      const result = await api.toggleLike(id);
+      if (result.liked !== undefined) {
+        setLiked(result.liked);
+        setLikeCount(result.likeCount || 0);
+        setProject(result.project || project);
+      }
+    } catch (error) {
+      // Revert on error
+      setLiked(wasLiked);
+      setLikeCount(prev => wasLiked ? prev + 1 : prev - 1);
+      showToast(error.message || 'Failed to like project', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!isAuthenticated) {
+      showToast('Please login to bookmark projects', 'info');
+      return;
+    }
+
+    setActionLoading(true);
+    const wasBookmarked = bookmarked;
+    
+    // Optimistic update
+    setBookmarked(!bookmarked);
+
+    try {
+      const result = await api.toggleBookmark(id);
+      if (result.bookmarked !== undefined) {
+        setBookmarked(result.bookmarked);
+        setProject(result.project || project);
+      }
+      showToast(result.bookmarked ? 'Bookmarked!' : 'Removed from bookmarks', 'success');
+    } catch (error) {
+      // Revert on error
+      setBookmarked(wasBookmarked);
+      showToast(error.message || 'Failed to bookmark project', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      await api.deleteProject(id);
+      showToast('Project deleted successfully', 'success');
+      navigate('/dashboard');
+    } catch (error) {
+      showToast(error.message || 'Failed to delete project', 'error');
+      setActionLoading(false);
+    }
+  };
+
+  const handleProjectUpdate = (updatedProject) => {
+    setProject(updatedProject);
+    setLikeCount(updatedProject.likeCount || updatedProject.likes?.length || 0);
+  };
+
+  const isOwner = project?.authorId === user?.uid || project?.author?.toLowerCase() === user?.name?.toLowerCase();
 
   if (!project) {
     return (
@@ -110,8 +225,45 @@ const ProjectDetails = () => {
               )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-3 mb-6">
+            {/* Engagement Metrics & Actions */}
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              {isAuthenticated && (
+                <>
+                  <button
+                    onClick={handleLike}
+                    disabled={actionLoading}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
+                      liked
+                        ? 'bg-red-500 text-white hover:bg-red-600'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <FaHeart className={liked ? 'fill-current' : ''} />
+                    <span>{likeCount}</span>
+                  </button>
+                  
+                  <button
+                    onClick={handleBookmark}
+                    disabled={actionLoading}
+                    className={`p-2 rounded-lg transition-all duration-200 ${
+                      bookmarked
+                        ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                  >
+                    <FaBookmark className={bookmarked ? 'fill-current' : ''} />
+                  </button>
+
+                  {views > 0 && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <FaEye />
+                      <span>{views} views</span>
+                    </div>
+                  )}
+                </>
+              )}
+
               {project.githubLink && (
                 <a
                   href={project.githubLink}
@@ -123,16 +275,27 @@ const ProjectDetails = () => {
                   View on GitHub
                 </a>
               )}
-              {project.pdfLink && (
+              {project.pdfUrl && (
                 <a
-                  href={project.pdfLink}
+                  href={project.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                 >
                   <FaFilePdf />
-                  Download PDF
+                  View PDF
                 </a>
+              )}
+
+              {isOwner && (
+                <button
+                  onClick={handleDelete}
+                  disabled={actionLoading}
+                  className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+                >
+                  <FaTrash />
+                  Delete Project
+                </button>
               )}
             </div>
 
@@ -172,12 +335,19 @@ const ProjectDetails = () => {
           </div>
 
           {/* Abstract */}
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Abstract</h2>
             <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
               {project.abstract}
             </p>
           </div>
+
+          {/* Comments Section */}
+          <CommentSection 
+            project={project} 
+            projectOwnerId={project.authorId}
+            onUpdate={handleProjectUpdate}
+          />
         </div>
       </div>
   );

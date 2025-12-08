@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProjects } from '../../context/ProjectContext';
+import { useActivity } from '../../context/ActivityContext';
 import { useToast } from '../../components/Toast';
 import ProjectCard from '../../components/ProjectCard';
-import { FaUser, FaFileAlt, FaPlus } from 'react-icons/fa';
+import { FaUser, FaFileAlt, FaPlus, FaBookmark, FaHistory, FaArrowRight } from 'react-icons/fa';
 
 const Dashboard = () => {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { projects, loading: projectsLoading } = useProjects();
+  const { recentProjects, bookmarkedProjects, fetchRecentProjects, fetchBookmarkedProjects } = useActivity();
   const navigate = useNavigate();
   const { showToast } = useToast();
 
@@ -40,6 +42,25 @@ const Dashboard = () => {
   
   // Get approved projects for community section
   const approvedProjects = projects.filter(p => p.status === 'approved');
+
+  // Get full project data for recent and bookmarked
+  const getFullProject = (projectId) => {
+    return projects.find(p => (p._id || p.id) === projectId);
+  };
+
+  const recentProjectsWithData = recentProjects
+    .map(rp => {
+      const fullProject = getFullProject(rp.projectId);
+      return fullProject ? { ...fullProject, viewedAt: rp.viewedAt } : null;
+    })
+    .filter(Boolean);
+
+  const bookmarkedProjectsWithData = bookmarkedProjects
+    .map(bp => {
+      const fullProject = getFullProject(bp.projectId);
+      return fullProject ? { ...fullProject, bookmarkedAt: bp.bookmarkedAt } : null;
+    })
+    .filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30">
@@ -147,6 +168,60 @@ const Dashboard = () => {
               </div>
             )}
           </div>
+
+          {/* Recently Viewed Projects */}
+          {recentProjectsWithData.length > 0 && (
+            <div className="mb-10">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl">
+                    <FaHistory className="text-blue-600 text-xl" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Recently Viewed</h2>
+                    <p className="text-gray-600 mt-1">Papers you've viewed recently</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recentProjectsWithData.slice(0, 6).map((project) => (
+                  <ProjectCard key={project._id || project.id} project={project} />
+                ))}
+              </div>
+              {recentProjectsWithData.length > 6 && (
+                <div className="text-center mt-6">
+                  <Link
+                    to="/thesis-finder"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-green-600 hover:text-green-700 font-semibold"
+                  >
+                    View All Recent <FaArrowRight />
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Bookmarked Projects */}
+          {bookmarkedProjectsWithData.length > 0 && (
+            <div className="mb-10">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl">
+                    <FaBookmark className="text-yellow-600 text-xl" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Bookmarked Papers</h2>
+                    <p className="text-gray-600 mt-1">Your saved research papers</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {bookmarkedProjectsWithData.map((project) => (
+                  <ProjectCard key={project._id || project.id} project={project} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Recent Projects from Community */}
           <div>

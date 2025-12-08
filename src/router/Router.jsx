@@ -4,6 +4,8 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import { ProjectProvider } from "../context/ProjectContext";
+import { NotificationProvider } from "../context/NotificationContext";
+import { ActivityProvider } from "../context/ActivityContext";
 import { ToastProvider } from "../components/Toast";
 import Layout from "../components/Layout";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -24,7 +26,11 @@ const Root = ({ children }) => {
   return (
     <ToastProvider>
       <AuthProvider>
-        {children}
+        <NotificationProvider>
+          <ActivityProvider>
+            {children}
+          </ActivityProvider>
+        </NotificationProvider>
       </AuthProvider>
     </ToastProvider>
   );
