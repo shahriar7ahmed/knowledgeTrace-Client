@@ -1,95 +1,11 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* ============================================
    KnowledgeTrace Design System
-   Tailwind CSS v4 Configuration
+   Tailwind CSS v3 Configuration
    ============================================ */
-
-/* === Custom Theme Configuration === */
-@theme {
-  /* Custom Color Palette */
-  --color-primary-50: oklch(97% 0.01 250);
-  --color-primary-100: oklch(94% 0.03 250);
-  --color-primary-200: oklch(88% 0.06 250);
-  --color-primary-300: oklch(80% 0.10 250);
-  --color-primary-400: oklch(70% 0.14 250);
-  --color-primary-500: oklch(62% 0.18 250);
-  --color-primary-600: oklch(55% 0.20 250);
-  --color-primary-700: oklch(48% 0.19 250);
-  --color-primary-800: oklch(40% 0.16 250);
-  --color-primary-900: oklch(33% 0.12 250);
-  --color-primary-950: oklch(22% 0.08 250);
-
-  --color-secondary-50: oklch(98% 0.02 290);
-  --color-secondary-100: oklch(95% 0.04 290);
-  --color-secondary-200: oklch(92% 0.07 290);
-  --color-secondary-300: oklch(86% 0.12 290);
-  --color-secondary-400: oklch(76% 0.17 290);
-  --color-secondary-500: oklch(67% 0.20 290);
-  --color-secondary-600: oklch(58% 0.21 290);
-  --color-secondary-700: oklch(49% 0.19 290);
-  --color-secondary-800: oklch(41% 0.16 290);
-  --color-secondary-900: oklch(34% 0.13 290);
-  --color-secondary-950: oklch(23% 0.11 290);
-
-  --color-success-50: oklch(97% 0.02 150);
-  --color-success-100: oklch(93% 0.05 150);
-  --color-success-200: oklch(86% 0.09 150);
-  --color-success-300: oklch(75% 0.13 150);
-  --color-success-400: oklch(60% 0.16 150);
-  --color-success-500: oklch(48% 0.17 150);
-  --color-success-600: oklch(39% 0.16 150);
-  --color-success-700: oklch(31% 0.14 150);
-  --color-success-800: oklch(26% 0.11 150);
-  --color-success-900: oklch(22% 0.09 150);
-
-  --color-warning-50: oklch(97% 0.02 90);
-
-
-  --color-warning-100: oklch(90% 0.06 90);
-  --color-warning-200: oklch(79% 0.11 90);
-  --color-warning-300: oklch(67% 0.14 90);
-  --color-warning-400: oklch(58% 0.16 90);
-  --color-warning-500: oklch(53% 0.17 90);
-  --color-warning-600: oklch(47% 0.16 90);
-  --color-warning-700: oklch(40% 0.14 90);
-  --color-warning-800: oklch(34% 0.11 90);
-  --color-warning-900: oklch(29% 0.09 90);
-
-  --color-error-50: oklch(97% 0.02 25);
-  --color-error-100: oklch(94% 0.05 25);
-  --color-error-200: oklch(90% 0.09 25);
-  --color-error-300: oklch(83% 0.13 25);
-  --color-error-400: oklch(72% 0.17 25);
-  --color-error-500: oklch(62% 0.20 25);
-  --color-error-600: oklch(53% 0.21 25);
-  --color-error-700: oklch(44% 0.19 25);
-  --color-error-800: oklch(37% 0.16 25);
-  --color-error-900: oklch(33% 0.13 25);
-
-  /* Font Families */
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
-
-  /* Custom spacing (extends default) */
-  --spacing-18: 4.5rem;
-  --spacing-22: 5.5rem;
-
-  /* Custom border radius */
-  --radius-4xl: 2rem;
-
-  /* Custom shadows */
-  --shadow-glow: 0 0 20px -5px rgb(0 0 0 / 0.3);
-
-  /* Z-index scale */
-  --z-dropdown: 1000;
-  --z-sticky: 1010;
-  --z-fixed: 1020;
-  --z-modal-backdrop: 1030;
-  --z-modal: 1040;
-  --z-popover: 1050;
-  --z-tooltip: 1060;
-}
 
 /* === Base Styles === */
 @layer base {
@@ -99,7 +15,6 @@
 
   html {
     @apply antialiased;
-    font-family: var(--font-sans);
   }
 
   body {
@@ -243,7 +158,7 @@
   }
 
   .textarea {
-    @apply input resize-vertical min-h-[100px];
+    @apply input resize-y min-h-[100px];
   }
 
   .select {
