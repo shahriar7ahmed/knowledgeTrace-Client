@@ -7,6 +7,7 @@ import { ProjectProvider } from "../context/ProjectContext";
 import { NotificationProvider } from "../context/NotificationContext";
 import { ActivityProvider } from "../context/ActivityContext";
 import { ToastProvider } from "../components/Toast";
+import ErrorBoundary from "../components/ErrorBoundary";
 import Layout from "../components/Layout";
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -24,15 +25,17 @@ import NotFound from "../pages/NotFound/NotFound";
 // Root component that wraps everything with providers
 const Root = ({ children }) => {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <NotificationProvider>
-          <ActivityProvider>
-            {children}
-          </ActivityProvider>
-        </NotificationProvider>
-      </AuthProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <ActivityProvider>
+              {children}
+            </ActivityProvider>
+          </NotificationProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 };
 
@@ -40,11 +43,11 @@ const Root = ({ children }) => {
 const createWrappedComponent = (Component, needsAuth = false, needsProjects = false, requireAdmin = false) => {
   return (props) => {
     let content = <Component {...props} />;
-    
+
     if (needsProjects) {
       content = <ProjectProvider>{content}</ProjectProvider>;
     }
-    
+
     // Wrap with ProtectedRoute if authentication is required
     if (needsAuth || requireAdmin) {
       content = (
@@ -53,7 +56,7 @@ const createWrappedComponent = (Component, needsAuth = false, needsProjects = fa
         </ProtectedRoute>
       );
     }
-    
+
     return <Layout>{content}</Layout>;
   };
 };
