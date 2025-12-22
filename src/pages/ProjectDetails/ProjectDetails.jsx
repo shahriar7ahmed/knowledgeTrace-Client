@@ -4,15 +4,18 @@ import { useProjects } from '../../context/ProjectContext';
 import { useAuth } from '../../context/AuthContext';
 import { useActivity } from '../../context/ActivityContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { FaGithub, FaFilePdf, FaCalendarAlt, FaUser, FaGraduationCap, FaArrowLeft, FaHeart, FaBookmark, FaTrash, FaEye } from 'react-icons/fa';
+import { FaGithub, FaFilePdf, FaCalendarAlt, FaUser, FaGraduationCap, FaArrowLeft, FaHeart, FaBookmark, FaTrash, FaEye, FaDownload } from 'react-icons/fa';
 import { api } from '../../utils/api';
 import { useToast } from '../../components/Toast';
 import CommentSection from '../../components/CommentSection';
+import RelatedProjects from '../../components/RelatedProjects';
+import AuthorProfileCard from '../../components/AuthorProfileCard';
+import ShareButton from '../../components/ShareButton';
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProjectById } = useProjects();
+  const { getProjectById, projects } = useProjects();
   const { user, isAuthenticated } = useAuth();
   const { addRecentProject } = useActivity();
   const { addNotification } = useNotifications();
@@ -35,7 +38,7 @@ const ProjectDetails = () => {
         setBookmarked(projectData.bookmarks?.some(b => b.userId === user?.uid) || false);
         setLikeCount(projectData.likeCount || projectData.likes?.length || 0);
         setViews(projectData.views || 0);
-        
+
         // Track view
         if (isAuthenticated && user?.uid) {
           try {
@@ -74,7 +77,7 @@ const ProjectDetails = () => {
 
     setActionLoading(true);
     const wasLiked = liked;
-    
+
     // Optimistic update
     setLiked(!liked);
     setLikeCount(prev => wasLiked ? prev - 1 : prev + 1);
@@ -104,7 +107,7 @@ const ProjectDetails = () => {
 
     setActionLoading(true);
     const wasBookmarked = bookmarked;
-    
+
     // Optimistic update
     setBookmarked(!bookmarked);
 
@@ -166,190 +169,203 @@ const ProjectDetails = () => {
 
   return (
     <div className="bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition"
-          >
-            <FaArrowLeft />
-            Back
-          </button>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition"
+        >
+          <FaArrowLeft />
+          Back
+        </button>
 
-          {/* Project Header */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">{project.title}</h1>
+        {/* Project Header */}
+        <div className="bg-white rounded-lg shadow-md p-8 mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">{project.title}</h1>
 
-            {/* Metadata */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {project.author && (
-                <div className="flex items-center gap-3">
-                  <FaUser className="text-green-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Author</p>
-                    <p className="font-medium text-gray-800">{project.author}</p>
-                  </div>
+          {/* Metadata */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {project.author && (
+              <div className="flex items-center gap-3">
+                <FaUser className="text-green-600" />
+                <div>
+                  <p className="text-sm text-gray-500">Author</p>
+                  <p className="font-medium text-gray-800">{project.author}</p>
                 </div>
-              )}
+              </div>
+            )}
 
-              {project.supervisor && (
-                <div className="flex items-center gap-3">
-                  <FaGraduationCap className="text-green-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Supervisor</p>
-                    <p className="font-medium text-gray-800">{project.supervisor}</p>
-                  </div>
+            {project.supervisor && (
+              <div className="flex items-center gap-3">
+                <FaGraduationCap className="text-green-600" />
+                <div>
+                  <p className="text-sm text-gray-500">Supervisor</p>
+                  <p className="font-medium text-gray-800">{project.supervisor}</p>
                 </div>
-              )}
+              </div>
+            )}
 
-              {project.year && (
-                <div className="flex items-center gap-3">
-                  <FaCalendarAlt className="text-green-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Year</p>
-                    <p className="font-medium text-gray-800">{project.year}</p>
-                  </div>
+            {project.year && (
+              <div className="flex items-center gap-3">
+                <FaCalendarAlt className="text-green-600" />
+                <div>
+                  <p className="text-sm text-gray-500">Year</p>
+                  <p className="font-medium text-gray-800">{project.year}</p>
                 </div>
-              )}
+              </div>
+            )}
 
-              {project.date && (
-                <div className="flex items-center gap-3">
-                  <FaCalendarAlt className="text-green-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Submitted</p>
-                    <p className="font-medium text-gray-800">
-                      {new Date(project.date).toLocaleDateString()}
-                    </p>
-                  </div>
+            {project.date && (
+              <div className="flex items-center gap-3">
+                <FaCalendarAlt className="text-green-600" />
+                <div>
+                  <p className="text-sm text-gray-500">Submitted</p>
+                  <p className="font-medium text-gray-800">
+                    {new Date(project.date).toLocaleDateString()}
+                  </p>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+          </div>
 
-            {/* Engagement Metrics & Actions */}
-            <div className="flex flex-wrap items-center gap-4 mb-6">
-              {isAuthenticated && (
-                <>
-                  <button
-                    onClick={handleLike}
-                    disabled={actionLoading}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
-                      liked
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    <FaHeart className={liked ? 'fill-current' : ''} />
-                    <span>{likeCount}</span>
-                  </button>
-                  
-                  <button
-                    onClick={handleBookmark}
-                    disabled={actionLoading}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      bookmarked
-                        ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
-                  >
-                    <FaBookmark className={bookmarked ? 'fill-current' : ''} />
-                  </button>
-
-                  {views > 0 && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <FaEye />
-                      <span>{views} views</span>
-                    </div>
-                  )}
-                </>
-              )}
-
-              {project.githubLink && (
-                <a
-                  href={project.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
-                >
-                  <FaGithub />
-                  View on GitHub
-                </a>
-              )}
-              {project.pdfUrl && (
-                <a
-                  href={project.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                >
-                  <FaFilePdf />
-                  View PDF
-                </a>
-              )}
-
-              {isOwner && (
+          {/* Engagement Metrics & Actions */}
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            {isAuthenticated && (
+              <>
                 <button
-                  onClick={handleDelete}
+                  onClick={handleLike}
                   disabled={actionLoading}
-                  className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${liked
+                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <FaTrash />
-                  Delete Project
+                  <FaHeart className={liked ? 'fill-current' : ''} />
+                  <span>{likeCount}</span>
                 </button>
-              )}
+
+                <button
+                  onClick={handleBookmark}
+                  disabled={actionLoading}
+                  className={`p-2 rounded-lg transition-all duration-200 ${bookmarked
+                      ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
+                >
+                  <FaBookmark className={bookmarked ? 'fill-current' : ''} />
+                </button>
+
+                {views > 0 && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg">
+                    <FaEye />
+                    <span>{views} views</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Share Button */}
+            <ShareButton project={project} />
+
+            {project.githubLink && (
+              <a
+                href={project.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
+              >
+                <FaGithub />
+                View on GitHub
+              </a>
+            )}
+
+            {project.pdfUrl && (
+              <a
+                href={project.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+                className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
+              >
+                <FaDownload />
+                Download PDF
+              </a>
+            )}
+
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                disabled={actionLoading}
+                className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg font-semibold disabled:opacity-50"
+              >
+                <FaTrash />
+                Delete Project
+              </button>
+            )}
+          </div>
+
+          {/* Tech Stack */}
+          {project.techStack && project.techStack.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Tech Stack</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.techStack.map((tech, idx) => (
+                  <span
+                    key={idx}
+                    className="px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* Tech Stack */}
-            {project.techStack && project.techStack.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Tech Stack</h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech, idx) => (
-                    <span
-                      key={idx}
-                      className="px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+          {/* Tags */}
+          {project.tags && project.tags.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Categories</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-md text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
-            )}
-
-            {/* Tags */}
-            {project.tags && project.tags.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Categories</h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-blue-50 text-blue-700 rounded-md text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Abstract */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Abstract</h2>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {project.abstract}
-            </p>
-          </div>
-
-          {/* Comments Section */}
-          <CommentSection 
-            project={project} 
-            projectOwnerId={project.authorId}
-            onUpdate={handleProjectUpdate}
-          />
+            </div>
+          )}
         </div>
+
+        {/* Abstract */}
+        <div className="bg-white rounded-2xl shadow-md p-8 mb-6 border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Abstract</h2>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+            {project.abstract}
+          </p>
+        </div>
+
+        {/* Author Profile Card */}
+        <div className="mb-6">
+          <AuthorProfileCard project={project} allProjects={projects} />
+        </div>
+
+        {/* Related Projects */}
+        <div className="mb-6">
+          <RelatedProjects currentProject={project} allProjects={projects} />
+        </div>
+
+        {/* Comments Section */}
+        <CommentSection
+          project={project}
+          projectOwnerId={project.authorId}
+          onUpdate={handleProjectUpdate}
+        />
       </div>
+    </div>
   );
 };
 
