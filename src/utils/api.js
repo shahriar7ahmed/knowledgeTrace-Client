@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://knowledgetrac
 const getAuthToken = async () => {
   try {
     const { auth } = await import('../firebase/firebase.init');
-    
+
     // First try to get current user synchronously
     const currentUser = auth.currentUser;
     if (currentUser) {
@@ -16,7 +16,7 @@ const getAuthToken = async () => {
         console.error('Error getting token from current user:', error);
       }
     }
-    
+
     // Fallback to onAuthStateChanged if currentUser is null
     const { onAuthStateChanged } = await import('firebase/auth');
     return new Promise((resolve) => {
@@ -38,7 +38,7 @@ const getAuthToken = async () => {
 // Generic API request function with retry logic for rate limiting
 const apiRequest = async (endpoint, options = {}, retries = 2) => {
   const token = await getAuthToken();
-  
+
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -55,7 +55,7 @@ const apiRequest = async (endpoint, options = {}, retries = 2) => {
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
+
     // Handle rate limiting - don't retry, just throw error
     if (response.status === 429) {
       const errorData = await response.json().catch(() => ({}));
@@ -65,7 +65,7 @@ const apiRequest = async (endpoint, options = {}, retries = 2) => {
       error.status = 429;
       throw error;
     }
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Request failed' }));
       const errorMessage = errorData.message || `HTTP error! status: ${response.status}`;
@@ -95,7 +95,7 @@ const apiRequest = async (endpoint, options = {}, retries = 2) => {
 // File upload request (for FormData) with retry logic for rate limiting
 const apiUpload = async (endpoint, formData, retries = 2) => {
   const token = await getAuthToken();
-  
+
   const headers = {};
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -107,7 +107,7 @@ const apiUpload = async (endpoint, formData, retries = 2) => {
       headers,
       body: formData,
     });
-    
+
     // Handle rate limiting - don't retry, just throw error
     if (response.status === 429) {
       const errorData = await response.json().catch(() => ({}));
@@ -117,7 +117,7 @@ const apiUpload = async (endpoint, formData, retries = 2) => {
       error.status = 429;
       throw error;
     }
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Upload failed' }));
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -137,6 +137,7 @@ const apiUpload = async (endpoint, formData, retries = 2) => {
 export const api = {
   // User endpoints
   getUserProfile: () => apiRequest('/users/profile'),
+  getUserById: (userId) => apiRequest(`/users/${userId}`),
   updateUserProfile: (data) => apiRequest('/users/profile', {
     method: 'PUT',
     body: JSON.stringify(data),
@@ -172,7 +173,7 @@ export const api = {
     body: JSON.stringify({ status }),
   }),
   getUserProjects: (userId) => apiRequest(`/projects/user/${userId}`),
-  
+
   // Admin endpoints
   getPendingProjects: () => apiRequest('/admin/projects/pending'),
   getAllProjects: () => apiRequest('/admin/projects'),
@@ -228,6 +229,24 @@ export const api = {
     method: 'PUT',
   }),
   getUnreadNotificationCount: () => apiRequest('/notifications/unread-count'),
+
+  // Collaboration endpoints
+  getCollabPosts: (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/collab${queryParams ? `?${queryParams}` : ''}`);
+  },
+  getUserCollabPosts: (userId) => apiRequest(`/collab/user/${userId}`),
+  createCollabPost: (data) => apiRequest('/collab', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  updateCollabStatus: (postId, status) => apiRequest(`/collab/${postId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  }),
+  deleteCollabPost: (postId) => apiRequest(`/collab/${postId}`, {
+    method: 'DELETE',
+  }),
 };
 
 export default api;

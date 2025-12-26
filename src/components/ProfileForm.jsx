@@ -10,6 +10,9 @@ const ProfileForm = () => {
     skills: '',
     github: '',
     linkedin: '',
+    bio: '',
+    headline: '',
+    website: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
@@ -23,6 +26,9 @@ const ProfileForm = () => {
         skills: user.skills || '',
         github: user.github || '',
         linkedin: user.linkedin || '',
+        bio: user.bio || '',
+        headline: user.headline || '',
+        website: user.socialLinks?.website || user.website || '',
       });
     }
   }, [user]);
@@ -39,17 +45,17 @@ const ProfileForm = () => {
     e.preventDefault();
     try {
       const api = await import('../utils/api');
-      
+
       // Convert skills string to array if needed
       const profileData = {
         ...formData,
-        skills: typeof formData.skills === 'string' 
+        skills: typeof formData.skills === 'string'
           ? formData.skills.split(',').map(s => s.trim()).filter(s => s)
           : formData.skills,
       };
-      
+
       const result = await api.api.updateUserProfile(profileData);
-      
+
       if (result.user) {
         updateUser(result.user);
         setIsEditing(false);
@@ -73,6 +79,9 @@ const ProfileForm = () => {
         skills: user.skills || '',
         github: user.github || '',
         linkedin: user.linkedin || '',
+        bio: user.bio || '',
+        headline: user.headline || '',
+        website: user.socialLinks?.website || user.website || '',
       });
     }
     setIsEditing(false);
@@ -96,9 +105,8 @@ const ProfileForm = () => {
 
         {message && (
           <div
-            className={`mb-4 p-3 rounded-lg ${
-              message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-            }`}
+            className={`mb-4 p-3 rounded-lg ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+              }`}
           >
             {message}
           </div>
@@ -199,6 +207,55 @@ const ProfileForm = () => {
                 placeholder="https://linkedin.com/in/username"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Website
+              </label>
+              <input
+                type="url"
+                name="website"
+                value={formData.website}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="https://yourwebsite.com"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Headline
+              </label>
+              <input
+                type="text"
+                name="headline"
+                value={formData.headline}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="e.g., CS Student | Full Stack Developer"
+                maxLength={100}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+              />
+              <p className="text-xs text-gray-500 mt-1">{formData.headline.length}/100 characters</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Bio
+              </label>
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="Tell us about yourself, your interests, and what you're working on..."
+                maxLength={500}
+                rows={4}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100 resize-none"
+              ></textarea>
+              <p className="text-xs text-gray-500 mt-1">{formData.bio.length}/500 characters</p>
             </div>
           </div>
 

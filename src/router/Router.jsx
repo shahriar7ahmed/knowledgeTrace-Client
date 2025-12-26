@@ -21,6 +21,8 @@ import MyWork from "../pages/MyWork/MyWork";
 import ProjectDetails from "../pages/ProjectDetails/ProjectDetails";
 import Admin from "../pages/Admin/Admin";
 import NotFound from "../pages/NotFound/NotFound";
+import UserProfile from "../pages/UserProfile/UserProfile";
+import CollabHub from "../pages/CollabHub/CollabHub";
 
 // Root component that wraps everything with providers
 const Root = ({ children }) => {
@@ -71,6 +73,8 @@ const ThesisFinderWithProviders = createWrappedComponent(ThesisFinder, false, tr
 const MyWorkWithProviders = createWrappedComponent(MyWork, true, true);
 const ProjectDetailsWithProviders = createWrappedComponent(ProjectDetails, false, true);
 const AdminWithProviders = createWrappedComponent(Admin, true, true, true); // requireAdmin = true
+const UserProfileWithProviders = createWrappedComponent(UserProfile, false, true); // Public profile, no auth required
+const CollabHubWithProviders = createWrappedComponent(CollabHub, false, false); // Public page
 
 const router = createBrowserRouter([
   {
@@ -134,6 +138,22 @@ const router = createBrowserRouter([
     element: (
       <Root>
         <ProjectDetailsWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/profile/:id",
+    element: (
+      <Root>
+        <UserProfileWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/collaborate",
+    element: (
+      <Root>
+        <CollabHubWithProviders />
       </Root>
     ),
   },

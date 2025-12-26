@@ -9,16 +9,17 @@ import NotificationBell from "./NotificationBell";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  
+
   // Use auth context if available
   const authContext = useContext(AuthContext);
   const isAuthenticated = authContext?.isAuthenticated || false;
   const user = authContext?.user || null;
-  const logout = authContext?.logout || (() => {});
+  const logout = authContext?.logout || (() => { });
 
   const links = [
     { label: "Home", path: "/" },
     { label: "Thesis Finder", path: "/thesis-finder" },
+    { label: "Collaborate", path: "/collaborate" },
     { label: "My Work", path: "/my-work" },
   ];
 
@@ -138,7 +139,7 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
-            
+
             <div className="border-t border-gray-200 mt-2 pt-2">
               {isAuthenticated ? (
                 <>
