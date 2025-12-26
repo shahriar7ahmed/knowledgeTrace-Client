@@ -119,17 +119,6 @@ const MyWork = () => {
             </div>
           </div>
 
-          {message && (
-            <div
-              className={`mb-6 p-4 rounded-xl border ${message.includes('successfully')
-                  ? 'bg-green-50 text-green-700 border-green-200'
-                  : 'bg-red-50 text-red-700 border-red-200'
-                }`}
-            >
-              {message}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
               <div>
