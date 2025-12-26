@@ -169,7 +169,7 @@ export const api = {
     return apiUpload('/projects', formData);
   },
   updateProjectStatus: (projectId, status) => apiRequest(`/projects/${projectId}/status`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify({ status }),
   }),
   getUserProjects: (userId) => apiRequest(`/projects/user/${userId}`),
