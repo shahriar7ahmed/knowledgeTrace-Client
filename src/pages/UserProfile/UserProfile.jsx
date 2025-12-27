@@ -74,7 +74,7 @@ const UserProfile = () => {
                         <p className="text-gray-600 mb-6">The user profile you're looking for doesn't exist.</p>
                         <Link
                             to="/"
-                            className="inline-block px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold"
+                            className="inline-block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold"
                         >
                             Go Home
                         </Link>
@@ -85,11 +85,11 @@ const UserProfile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/20 pt-24 pb-16">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-primary-50/20 pt-24 pb-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
-                    <div className="bg-gradient-to-r from-green-600 to-emerald-600 h-32"></div>
+                    <div className="bg-gradient-to-r from-royal to-primary-500 h-32"></div>
                     <div className="px-6 md:px-8 pb-8">
                         <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-16">
                             {/* Profile Picture */}
@@ -143,7 +143,7 @@ const UserProfile = () => {
                                             href={userData.socialLinks.website}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 text-sm font-medium"
+                                            className="flex items-center gap-2 px-4 py-2 bg-royal text-white rounded-lg hover:bg-royal-dark transition-all duration-200 text-sm font-medium"
                                         >
                                             <FaGlobe />
                                             Website
@@ -184,7 +184,7 @@ const UserProfile = () => {
                                 {userData.skills.map((skill, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-sm rounded-lg font-semibold border border-green-200"
+                                        className="px-3 py-1.5 bg-primary-100 text-primary-700 text-sm rounded-full font-semibold border border-primary-200"
                                     >
                                         {skill}
                                     </span>
@@ -202,8 +202,8 @@ const UserProfile = () => {
                             <button
                                 onClick={() => setActiveTab('projects')}
                                 className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === 'projects'
-                                        ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                    ? 'text-royal border-b-2 border-royal bg-primary-50'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                                     }`}
                             >
                                 <FaProjectDiagram />
@@ -212,8 +212,8 @@ const UserProfile = () => {
                             <button
                                 onClick={() => setActiveTab('collabs')}
                                 className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === 'collabs'
-                                        ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                    ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                                     }`}
                             >
                                 <FaHandshake />

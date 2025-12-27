@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaClock, FaUser, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const CollabCard = ({ post }) => {
     // Format timestamp to relative time (e.g., "2 days ago")
@@ -33,10 +34,16 @@ const CollabCard = ({ post }) => {
     };
 
     return (
-        <div className="group rounded-2xl shadow-md bg-white hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="group rounded-2xl shadow-md bg-white hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 hover:border-royal"
+        >
             {/* Header with Status Badge */}
             <div className="flex items-start justify-between mb-3">
-                <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-200 flex-1 pr-3">
+                <h3 className="text-xl font-bold text-gray-900 group-hover:text-royal transition-colors duration-200 flex-1 pr-3">
                     {post.title}
                 </h3>
                 {post.status === 'OPEN' ? (
@@ -72,7 +79,7 @@ const CollabCard = ({ post }) => {
                         {post.skillsRequired.slice(0, 5).map((skill, idx) => (
                             <span
                                 key={idx}
-                                className="px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-xs rounded-lg font-semibold border border-green-200"
+                                className="px-3 py-1.5 bg-primary-100 text-primary-700 text-xs rounded-full font-semibold border border-primary-200"
                             >
                                 {skill}
                             </span>
@@ -89,11 +96,11 @@ const CollabCard = ({ post }) => {
             {/* Footer: Posted By & Timestamp */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaUser className="text-green-600" />
+                    <FaUser className="text-royal" />
                     <span>Posted by</span>
                     <Link
                         to={`/profile/${post.owner?.uid || post.owner?._id || post.owner}`}
-                        className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors duration-200"
+                        className="font-semibold text-royal hover:text-royal-dark hover:underline transition-colors duration-200"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {post.owner?.name || post.owner?.displayName || 'Unknown User'}
@@ -109,12 +116,12 @@ const CollabCard = ({ post }) => {
             <div className="mt-4">
                 <Link
                     to={`/profile/${post.owner?.uid || post.owner?._id || post.owner}`}
-                    className="block w-full text-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
+                    className="block w-full text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
                 >
                     View Profile & Contact
                 </Link>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

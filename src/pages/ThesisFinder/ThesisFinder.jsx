@@ -163,17 +163,17 @@ const ThesisFinder = () => {
     (filters.sortBy && filters.sortBy !== 'date-desc');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-primary-50/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-royal to-primary-500 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-xl">🔍</span>
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Thesis <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Finder</span>
+                Thesis <span className="bg-gradient-to-r from-royal to-primary-500 bg-clip-text text-transparent">Finder</span>
               </h1>
               <p className="text-gray-600 mt-1">
                 Search and explore completed theses and projects from students

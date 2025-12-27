@@ -63,16 +63,16 @@ const CollabHub = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/20 pt-24 pb-16">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-primary-50/20 pt-24 pb-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary-100 text-royal rounded-full text-sm font-semibold mb-4">
                         <FaRocket />
                         <span>Find Your Perfect Teammate</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Collaboration <span className="text-green-600">Hub</span>
+                        Collaboration <span className="text-royal">Hub</span>
                     </h1>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                         Connect with fellow students, find project partners, and build amazing things together
@@ -85,7 +85,7 @@ const CollabHub = () => {
                         {/* Create Post Button */}
                         <button
                             onClick={handleCreatePost}
-                            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 flex items-center justify-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                            className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center justify-center gap-2 font-semibold shadow-md hover:shadow-lg"
                         >
                             <FaPlus />
                             Create Collaboration Post
@@ -102,7 +102,7 @@ const CollabHub = () => {
                             <select
                                 value={filters.projectType}
                                 onChange={(e) => handleFilterChange('projectType', e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 text-sm font-medium"
+                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-royal focus:border-transparent transition-all duration-200 text-sm font-medium"
                             >
                                 <option value="All">All Types</option>
                                 <option value="Thesis">Thesis</option>
@@ -116,7 +116,7 @@ const CollabHub = () => {
                                 value={filters.skill}
                                 onChange={(e) => handleFilterChange('skill', e.target.value)}
                                 placeholder="Filter by skill..."
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 text-sm"
+                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-royal focus:border-transparent transition-all duration-200 text-sm"
                             />
                         </div>
                     </div>
@@ -143,7 +143,7 @@ const CollabHub = () => {
                         {isAuthenticated && (
                             <button
                                 onClick={handleCreatePost}
-                                className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 inline-flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                                className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 inline-flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
                             >
                                 <FaPlus />
                                 Create First Post

@@ -22,7 +22,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
   const handleLike = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!isAuthenticated) {
       showToast('Please login to like projects', 'info');
       return;
@@ -30,7 +30,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
 
     setLoading(true);
     const wasLiked = liked;
-    
+
     // Optimistic update
     setLiked(!liked);
     setLikeCount(prev => wasLiked ? prev - 1 : prev + 1);
@@ -55,7 +55,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
   const handleBookmark = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!isAuthenticated) {
       showToast('Please login to bookmark projects', 'info');
       return;
@@ -63,7 +63,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
 
     setLoading(true);
     const wasBookmarked = bookmarked;
-    
+
     // Optimistic update
     setBookmarked(!bookmarked);
     toggleBookmarkLocal(project._id || project.id, wasBookmarked);
@@ -90,9 +90,9 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
   };
 
   return (
-    <div className="group rounded-2xl shadow-md bg-white hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 hover:border-green-200 hover:-translate-y-1">
+    <div className="group rounded-2xl shadow-md bg-white hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 hover:border-royal hover:-translate-y-1">
       {/* Project Title */}
-      <h2 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-green-600 transition-colors duration-200">
+      <h2 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-royal transition-colors duration-200">
         {showFullDetails ? (
           project.title
         ) : (
@@ -112,7 +112,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
         {project.techStack?.slice(0, 4).map((tech, idx) => (
           <span
             key={idx}
-            className="px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 text-xs rounded-lg font-semibold border border-green-200"
+            className="px-3 py-1.5 bg-primary-100 text-primary-700 text-xs rounded-full font-semibold border border-primary-200"
           >
             {tech}
           </span>
@@ -142,19 +142,19 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
       <div className="space-y-2 mb-4 text-sm text-gray-500">
         {project.author && (
           <div className="flex items-center gap-2">
-            <FaUser className="text-green-600" />
+            <FaUser className="text-royal" />
             <span>{project.author}</span>
           </div>
         )}
         {project.supervisor && (
           <div className="flex items-center gap-2">
-            <FaGraduationCap className="text-green-600" />
+            <FaGraduationCap className="text-royal" />
             <span>Supervisor: {project.supervisor}</span>
           </div>
         )}
         {project.year && (
           <div className="flex items-center gap-2">
-            <FaCalendarAlt className="text-green-600" />
+            <FaCalendarAlt className="text-royal" />
             <span>Year: {project.year}</span>
           </div>
         )}
@@ -166,25 +166,23 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
           <button
             onClick={handleLike}
             disabled={loading}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm font-medium ${
-              liked
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm font-medium ${liked
                 ? 'bg-red-50 text-red-600 hover:bg-red-100'
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             title={liked ? 'Unlike' : 'Like'}
           >
             <FaHeart className={liked ? 'fill-current' : ''} />
             <span>{likeCount}</span>
           </button>
-          
+
           <button
             onClick={handleBookmark}
             disabled={loading}
-            className={`p-1.5 rounded-lg transition-all duration-200 ${
-              bookmarked
+            className={`p-1.5 rounded-lg transition-all duration-200 ${bookmarked
                 ? 'text-yellow-500 hover:bg-yellow-50'
                 : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
-            } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
           >
             <FaBookmark className={bookmarked ? 'fill-current' : ''} />
@@ -226,7 +224,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
         {!showFullDetails && (
           <Link
             to={`/project/${project._id || project.id}`}
-            className="flex-1 text-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
+            className="flex-1 text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
           >
             View Details
           </Link>

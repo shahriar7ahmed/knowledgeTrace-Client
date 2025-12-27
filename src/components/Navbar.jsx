@@ -34,11 +34,11 @@ const Navbar = () => {
       {/* ---------- Large Screens ---------- */}
       <div className="hidden lg:flex items-center justify-between px-6 lg:px-12 py-4 max-w-7xl mx-auto">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <div className="w-10 h-10 bg-gradient-to-br from-royal to-primary-400 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
             <span className="text-white font-bold text-xl">K</span>
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            Knowledge<span className="text-green-600">Trace</span>
+            Knowledge<span className="text-royal">Trace</span>
           </h1>
         </Link>
 
@@ -48,7 +48,7 @@ const Navbar = () => {
             <li key={idx}>
               <Link
                 to={link.path}
-                className="px-4 py-2 rounded-lg text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200 text-sm font-medium"
+                className="px-4 py-2 rounded-lg text-gray-700 hover:text-royal hover:bg-primary-50 transition-all duration-200 text-sm font-medium"
               >
                 {link.label}
               </Link>
@@ -88,7 +88,7 @@ const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-royal to-primary-500 text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm"
             >
               <FontAwesomeIcon icon={faRightToBracket} className="text-sm" />
               Login
@@ -100,11 +100,11 @@ const Navbar = () => {
       {/* ---------- Small Screens (Logo + Hamburger) ---------- */}
       <div className="lg:hidden px-4 py-3 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+          <div className="w-8 h-8 bg-gradient-to-br from-royal to-primary-400 rounded-lg flex items-center justify-center shadow-md">
             <span className="text-white font-bold text-lg">K</span>
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            Knowledge<span className="text-green-600">Trace</span>
+            Knowledge<span className="text-royal">Trace</span>
           </h1>
         </Link>
 
@@ -132,7 +132,7 @@ const Navbar = () => {
               <li key={idx}>
                 <Link
                   to={link.path}
-                  className="block px-6 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 transition-all duration-200 font-medium"
+                  className="block px-6 py-3 text-gray-700 hover:text-royal hover:bg-primary-50 transition-all duration-200 font-medium"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
@@ -175,7 +175,7 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="block px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all duration-200 flex items-center gap-2 font-medium mx-4 rounded-lg shadow-md"
+                  className="block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 font-medium mx-4 rounded-lg shadow-md"
                 >
                   <FontAwesomeIcon icon={faRightToBracket} />
                   Login

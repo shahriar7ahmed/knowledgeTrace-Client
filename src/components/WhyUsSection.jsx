@@ -6,7 +6,7 @@ const WhyUsSection = () => {
     <div className="py-20 px-5 md:px-20 text-center bg-white">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-gray-900">
-          Why <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">KnowledgeTrace?</span>
+          Why <span className="bg-gradient-to-r from-royal to-primary-500 bg-clip-text text-transparent">KnowledgeTrace?</span>
         </h1>
 
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-16">
