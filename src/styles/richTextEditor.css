@@ -1,0 +1,107 @@
+/* Rich Text Editor Custom Styles */
+/* Customizes react-quill to match KnowledgeTrace design system with Royal Blue theme */
+
+.rich-text-editor .ql-toolbar {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    padding: 0.5rem;
+}
+
+.rich-text-editor .ql-container {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    font-size: 1rem;
+    min-height: 180px;
+    font-family: inherit;
+}
+
+.rich-text-editor .ql-editor {
+    min-height: 180px;
+    padding: 1rem;
+    line-height: 1.6;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+    color: #9ca3af;
+    font-style: normal;
+    left: 1rem;
+    right: 1rem;
+}
+
+/* Royal Blue theme for active elements */
+.rich-text-editor .ql-snow .ql-stroke {
+    stroke: #4b5563;
+}
+
+.rich-text-editor .ql-snow .ql-fill {
+    fill: #4b5563;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-stroke,
+.rich-text-editor .ql-snow .ql-toolbar button:hover .ql-stroke {
+    stroke: #4169E1;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button:hover .ql-fill,
+.rich-text-editor .ql-snow .ql-toolbar button:hover .ql-fill {
+    fill: #4169E1;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.rich-text-editor .ql-snow .ql-toolbar button.ql-active .ql-stroke {
+    stroke: #4169E1;
+}
+
+.rich-text-editor .ql-snow.ql-toolbar button.ql-active .ql-fill,
+.rich-text-editor .ql-snow .ql-toolbar button.ql-active .ql-fill {
+    fill: #4169E1;
+}
+
+/* Focus state with Royal Blue ring */
+.rich-text-editor:focus-within .ql-container {
+    border-color: #4169E1;
+    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+}
+
+/* Link styling in editor */
+.rich-text-editor .ql-editor a {
+    color: #4169E1;
+    text-decoration: underline;
+}
+
+/* List styling */
+.rich-text-editor .ql-editor ul,
+.rich-text-editor .ql-editor ol {
+    padding-left: 1.5rem;
+}
+
+.rich-text-editor .ql-editor li {
+    margin-bottom: 0.25rem;
+}
+
+/* Tooltip styling */
+.rich-text-editor .ql-tooltip {
+    border-radius: 0.5rem;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.rich-text-editor .ql-tooltip input[type="text"] {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.5rem;
+}
+
+.rich-text-editor .ql-tooltip a.ql-action::after {
+    content: 'Edit';
+    color: #4169E1;
+}
+
+.rich-text-editor .ql-tooltip a.ql-remove::before {
+    content: 'Remove';
+    color: #ef4444;
+}

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProjects } from '../../context/ProjectContext';
 import { useToast } from '../../components/Toast';
-import { 
-  FaCheck, 
-  FaTimes, 
-  FaEye, 
-  FaClock, 
-  FaCheckCircle, 
+import {
+  FaCheck,
+  FaTimes,
+  FaEye,
+  FaClock,
+  FaCheckCircle,
   FaTimesCircle,
   FaChartBar,
   FaFilter,
@@ -34,6 +34,7 @@ import {
 } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { api } from '../../utils/api';
+import SafeHtmlDisplay from '../../components/SafeHtmlDisplay';
 
 // Register Chart.js components
 ChartJS.register(
@@ -87,7 +88,7 @@ const Admin = () => {
         code: error.code,
         details: error.details
       });
-      
+
       let errorMessage = 'Failed to load projects';
       if (error.code === 'FORBIDDEN') {
         errorMessage = 'You do not have admin access. Please contact an administrator.';
@@ -98,7 +99,7 @@ const Admin = () => {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       showToast(errorMessage, 'error');
       setProjectsLocal([]);
       return [];
@@ -124,9 +125,9 @@ const Admin = () => {
       searchTerm,
       projectsStatuses: projects.map(p => ({ id: p._id || p.id, status: p.status, title: p.title?.substring(0, 30) }))
     });
-    
+
     let filtered = projects;
-    
+
     // Filter by status
     if (activeTab !== 'all') {
       const beforeCount = filtered.length;
@@ -139,12 +140,12 @@ const Admin = () => {
       });
       console.log(`📊 Status filter "${activeTab}": ${beforeCount} → ${filtered.length} projects`);
     }
-    
+
     // Filter by search term
     if (searchTerm) {
       const beforeCount = filtered.length;
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.title?.toLowerCase().includes(term) ||
         p.author?.toLowerCase().includes(term) ||
         p.abstract?.toLowerCase().includes(term) ||
@@ -152,13 +153,13 @@ const Admin = () => {
       );
       console.log(`🔎 Search filter "${searchTerm}": ${beforeCount} → ${filtered.length} projects`);
     }
-    
+
     const sorted = filtered.sort((a, b) => {
       const dateA = new Date(a.createdAt || a.date || 0);
       const dateB = new Date(b.createdAt || b.date || 0);
       return dateB - dateA;
     });
-    
+
     console.log(`✅ Final filtered projects: ${sorted.length}`);
     return sorted;
   }, [projects, activeTab, searchTerm]);
@@ -170,9 +171,9 @@ const Admin = () => {
     const approved = projects.filter(p => p.status === 'approved').length;
     const rejected = projects.filter(p => p.status === 'rejected').length;
     const total = projects.length;
-    
+
     console.log('📈 Stats calculated:', { pending, approved, rejected, total });
-    
+
     // Projects by month (last 6 months)
     const monthlyData = {};
     const now = new Date();
@@ -181,7 +182,7 @@ const Admin = () => {
       const key = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
       monthlyData[key] = 0;
     }
-    
+
     projects.forEach(project => {
       const date = new Date(project.createdAt || project.date || Date.now());
       const key = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
@@ -189,7 +190,7 @@ const Admin = () => {
         monthlyData[key]++;
       }
     });
-    
+
     // Tech stack distribution (top 10)
     const techStackCount = {};
     projects.forEach(project => {
@@ -203,7 +204,7 @@ const Admin = () => {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
       .map(([name, count]) => ({ name, count }));
-    
+
     return {
       pending,
       approved,
@@ -227,9 +228,9 @@ const Admin = () => {
     try {
       console.log('Updating project status:', { projectId, newStatus });
       const result = await api.updateProjectStatus(projectId, newStatus);
-      
+
       console.log('Status update result:', result);
-      
+
       if (result) {
         showToast(
           `Project ${newStatus === 'approved' ? 'approved' : newStatus === 'rejected' ? 'rejected' : 'updated'} successfully!`,
@@ -486,17 +487,15 @@ const Admin = () => {
                       console.log('🔄 Tab clicked:', tab.id);
                       setActiveTab(tab.id);
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                      isActive
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${isActive
                         ? activeColors[tab.color] || 'bg-blue-500 text-white shadow-md'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
+                      }`}
                   >
                     <Icon />
                     <span>{tab.label}</span>
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${
-                      isActive ? 'bg-white/20' : 'bg-gray-200'
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs ${isActive ? 'bg-white/20' : 'bg-gray-200'
+                      }`}>
                       {tab.count}
                     </span>
                   </button>
@@ -556,7 +555,7 @@ const Admin = () => {
                       approved: 'bg-green-100 text-green-800',
                       rejected: 'bg-red-100 text-red-800',
                     };
-                    
+
                     return (
                       <tr key={projectId} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
@@ -600,9 +599,8 @@ const Admin = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              statusColors[project.status] || 'bg-gray-100 text-gray-800'
-                            }`}
+                            className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[project.status] || 'bg-gray-100 text-gray-800'
+                              }`}
                           >
                             {project.status?.charAt(0).toUpperCase() + project.status?.slice(1) || 'Unknown'}
                           </span>
@@ -664,8 +662,8 @@ const Admin = () => {
               </div>
               <p className="text-xl font-bold text-gray-900 mb-2">No projects found</p>
               <p className="text-gray-600 mb-4">
-                {searchTerm 
-                  ? `No projects match "${searchTerm}"` 
+                {searchTerm
+                  ? `No projects match "${searchTerm}"`
                   : activeTab !== 'all'
                     ? `No ${activeTab} projects found`
                     : 'No projects in database'}
@@ -679,9 +677,9 @@ const Admin = () => {
                 <div className="text-sm text-gray-500 space-y-1">
                   <p>Total projects: {projects.length}</p>
                   <p>Active filter: {activeTab}</p>
-                  <p>Projects by status: Pending({projects.filter(p => p.status === 'pending').length}), 
-                     Approved({projects.filter(p => p.status === 'approved').length}), 
-                     Rejected({projects.filter(p => p.status === 'rejected').length})</p>
+                  <p>Projects by status: Pending({projects.filter(p => p.status === 'pending').length}),
+                    Approved({projects.filter(p => p.status === 'approved').length}),
+                    Rejected({projects.filter(p => p.status === 'rejected').length})</p>
                 </div>
               )}
             </div>
@@ -722,19 +720,18 @@ const Admin = () => {
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Status</p>
                   <span
-                    className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      {
+                    className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${{
                         pending: 'bg-yellow-100 text-yellow-800',
                         approved: 'bg-green-100 text-green-800',
                         rejected: 'bg-red-100 text-red-800',
                       }[selectedProject.status] || 'bg-gray-100 text-gray-800'
-                    }`}
+                      }`}
                   >
                     {selectedProject.status?.charAt(0).toUpperCase() + selectedProject.status?.slice(1)}
                   </span>
                 </div>
               </div>
-              
+
               {selectedProject.techStack && selectedProject.techStack.length > 0 && (
                 <div className="mb-6">
                   <p className="text-sm text-gray-500 mb-2">Tech Stack</p>
@@ -753,7 +750,10 @@ const Admin = () => {
 
               <div className="mb-6">
                 <p className="text-sm text-gray-500 mb-2">Abstract</p>
-                <p className="text-gray-700 leading-relaxed">{selectedProject.abstract || 'No abstract provided'}</p>
+                <SafeHtmlDisplay
+                  htmlContent={selectedProject.abstract || 'No abstract provided'}
+                  className="text-gray-700 leading-relaxed"
+                />
               </div>
 
               <div className="flex gap-3">

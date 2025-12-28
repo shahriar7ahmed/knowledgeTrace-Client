@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useProjects } from '../../context/ProjectContext';
 import { FaUpload, FaFilePdf } from 'react-icons/fa';
 import showToast from '../../utils/toast';
+import RichTextEditor from '../../components/RichTextEditor';
 
 const MyWork = () => {
   const { isAuthenticated, user } = useAuth();
@@ -104,11 +105,11 @@ const MyWork = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-emerald-50/30 py-12 px-4 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-primary-50/30 py-12 px-4 pt-24">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-royal to-primary-500 rounded-xl flex items-center justify-center shadow-lg">
               <FaUpload className="text-white text-xl" />
             </div>
             <div>
@@ -137,18 +138,18 @@ const MyWork = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Abstract <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  name="abstract"
+                <RichTextEditor
                   value={formData.abstract}
-                  onChange={handleChange}
-                  rows="6"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 resize-none"
+                  onChange={(value) => setFormData(prev => ({ ...prev, abstract: value }))}
                   placeholder="Provide a detailed abstract of your project..."
-                  required
+                  className="w-full"
                 />
+                <p className="text-xs text-gray-500 mt-2">
+                  Use the toolbar to format your text (bold, italic, lists, links)
+                </p>
               </div>
 
               <div>
@@ -247,7 +248,7 @@ const MyWork = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
+                className="flex-1 px-6 py-3.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-xl hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
               >
                 {loading ? 'Submitting...' : 'Submit Project'}
               </button>

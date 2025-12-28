@@ -11,6 +11,7 @@ import CommentSection from '../../components/CommentSection';
 import RelatedProjects from '../../components/RelatedProjects';
 import AuthorProfileCard from '../../components/AuthorProfileCard';
 import ShareButton from '../../components/ShareButton';
+import SafeHtmlDisplay from '../../components/SafeHtmlDisplay';
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -62,7 +63,7 @@ const ProjectDetails = () => {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-royal mx-auto mb-4"></div>
           <p className="text-gray-600">Loading project details...</p>
         </div>
       </div>
@@ -158,7 +159,7 @@ const ProjectDetails = () => {
           <p className="text-gray-600 mb-4">The project you're looking for doesn't exist.</p>
           <button
             onClick={() => navigate('/thesis-finder')}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            className="px-6 py-2 bg-royal text-white rounded-lg hover:bg-royal-dark transition"
           >
             Browse Projects
           </button>
@@ -236,8 +237,8 @@ const ProjectDetails = () => {
                   onClick={handleLike}
                   disabled={actionLoading}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${liked
-                      ? 'bg-red-500 text-white hover:bg-red-600'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-red-500 text-white hover:bg-red-600'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <FaHeart className={liked ? 'fill-current' : ''} />
@@ -248,8 +249,8 @@ const ProjectDetails = () => {
                   onClick={handleBookmark}
                   disabled={actionLoading}
                   className={`p-2 rounded-lg transition-all duration-200 ${bookmarked
-                      ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     } ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
                 >
@@ -313,7 +314,7 @@ const ProjectDetails = () => {
                 {project.techStack.map((tech, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium"
+                    className="px-4 py-2 bg-primary-100 text-royal rounded-full font-medium"
                   >
                     {tech}
                   </span>
@@ -343,9 +344,10 @@ const ProjectDetails = () => {
         {/* Abstract */}
         <div className="bg-white rounded-2xl shadow-md p-8 mb-6 border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Abstract</h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {project.abstract}
-          </p>
+          <SafeHtmlDisplay
+            htmlContent={project.abstract}
+            className="text-gray-700 leading-relaxed prose-headings:text-gray-900 prose-a:text-royal prose-strong:text-gray-900"
+          />
         </div>
 
         {/* Author Profile Card */}

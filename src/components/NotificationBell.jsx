@@ -32,7 +32,9 @@ const NotificationBell = () => {
       await markAsRead(notification._id);
     }
     setIsOpen(false);
-    navigate(`/project/${notification.projectId}`);
+    // Navigate to relatedLink if available, otherwise fall back to project page
+    const targetLink = notification.relatedLink || `/project/${notification.projectId}`;
+    navigate(targetLink);
   };
 
   const handleMarkAllRead = async () => {
@@ -68,7 +70,7 @@ const NotificationBell = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-gray-700 hover:text-green-600 transition-colors duration-200"
+        className="relative p-2 text-gray-700 hover:text-royal transition-colors duration-200"
         aria-label="Notifications"
       >
         <FaBell className="text-xl" />
@@ -87,7 +89,7 @@ const NotificationBell = () => {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-sm text-green-600 hover:text-green-700 flex items-center gap-1"
+                className="text-sm text-royal hover:text-royal-dark flex items-center gap-1 font-medium"
               >
                 <FaCheckDouble />
                 Mark all read
@@ -108,9 +110,8 @@ const NotificationBell = () => {
                   <div
                     key={notification._id}
                     onClick={() => handleNotificationClick(notification)}
-                    className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-150 ${
-                      !notification.read ? 'bg-blue-50/50' : ''
-                    }`}
+                    className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors duration-150 ${!notification.read ? 'bg-blue-50/50' : ''
+                      }`}
                   >
                     <div className="flex gap-3">
                       <div className="flex-shrink-0 mt-1">
@@ -147,7 +148,7 @@ const NotificationBell = () => {
                   setIsOpen(false);
                   navigate('/dashboard');
                 }}
-                className="text-sm text-green-600 hover:text-green-700 font-medium"
+                className="text-sm text-royal hover:text-royal-dark font-medium"
               >
                 View all
               </button>

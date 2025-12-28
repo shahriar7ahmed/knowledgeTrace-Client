@@ -247,6 +247,10 @@ export const api = {
   deleteCollabPost: (postId) => apiRequest(`/collab/${postId}`, {
     method: 'DELETE',
   }),
+  applyToCollabPost: (postId, message = '') => apiRequest(`/collab/${postId}/apply`, {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  }),
 };
 
 export default api;
