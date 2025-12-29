@@ -76,6 +76,16 @@ const AdminWithProviders = createWrappedComponent(Admin, true, true, true); // r
 const UserProfileWithProviders = createWrappedComponent(UserProfile, false, true); // Public profile, no auth required
 const CollabHubWithProviders = createWrappedComponent(CollabHub, false, false); // Public page
 
+// Thesis Management Pages
+const SupervisorDashboard = React.lazy(() => import('../pages/SupervisorDashboard/SupervisorDashboard'));
+const StudentWorkflowHub = React.lazy(() => import('../pages/StudentWorkflowHub/StudentWorkflowHub'));
+const TeamFinder = React.lazy(() => import('../pages/TeamFinder/TeamFinder'));
+
+const SupervisorDashboardWithProviders = createWrappedComponent(SupervisorDashboard, true, true, false);
+const StudentWorkflowHubWithProviders = createWrappedComponent(StudentWorkflowHub, true, true, false);
+const TeamFinderWithProviders = createWrappedComponent(TeamFinder, true, true, false);
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -154,6 +164,30 @@ const router = createBrowserRouter([
     element: (
       <Root>
         <CollabHubWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/supervisor/dashboard",
+    element: (
+      <Root>
+        <SupervisorDashboardWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/student/workflow",
+    element: (
+      <Root>
+        <StudentWorkflowHubWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/teams/find",
+    element: (
+      <Root>
+        <TeamFinderWithProviders />
       </Root>
     ),
   },

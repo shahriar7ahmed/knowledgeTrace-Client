@@ -251,7 +251,74 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ message }),
   }),
+
+  // ==================== THESIS MANAGEMENT ENDPOINTS ====================
+
+  // Module A: Thesis Vault
+  searchTheses: (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/thesis/search${queryParams ? `?${queryParams}` : ''}`);
+  },
+  getThesisById: (id) => apiRequest(`/thesis/${id}`),
+  checkDuplicate: (abstract) => apiRequest('/thesis/check-duplicate', {
+    method: 'POST',
+    body: JSON.stringify({ abstract }),
+  }),
+  getThesisStats: () => apiRequest('/thesis/admin/stats'),
+
+  // Module B: Workflow Management
+  getPendingApprovals: () => apiRequest('/workflow/pending'),
+  submitProposal: (projectId) => apiRequest('/workflow/submit-proposal', {
+    method: 'POST',
+    body: JSON.stringify({ projectId }),
+  }),
+  reviewProject: (projectId, action, feedback) => apiRequest(`/workflow/${projectId}/review`, {
+    method: 'PATCH',
+    body: JSON.stringify({ action, feedback }),
+  }),
+  addWorkflowComment: (projectId, phase, comment) => apiRequest(`/workflow/${projectId}/comment`, {
+    method: 'POST',
+    body: JSON.stringify({ projectId, phase, comment }),
+  }),
+  getProjectTimeline: (projectId) => apiRequest(`/workflow/${projectId}/timeline`),
+  advancePhase: (projectId, newPhase) => apiRequest(`/workflow/${projectId}/advance`, {
+    method: 'PATCH',
+    body: JSON.stringify({ newPhase }),
+  }),
+
+  // Module C: Team Formation
+  findMatchingStudents: (projectId, minScore = 0, limit = 20) =>
+    apiRequest(`/teams/find-matches/${projectId}?minScore=${minScore}&limit=${limit}`),
+  inviteToTeam: (projectId, userId, message = '') => apiRequest('/teams/invite', {
+    method: 'POST',
+    body: JSON.stringify({ projectId, userId, message }),
+  }),
+  respondToInvitation: (inviteId, action) => apiRequest(`/teams/respond/${inviteId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ action }),
+  }),
+  getMyTeams: () => apiRequest('/teams/my-teams'),
+  leaveTeam: (teamId) => apiRequest(`/teams/${teamId}/leave`, {
+    method: 'DELETE',
+  }),
+
+  // Supervisor Requests
+  browseSupervisors: (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/supervisors/browse${queryParams ? `?${queryParams}` : ''}`);
+  },
+  sendSupervisorRequest: (supervisorId, projectId, message) => apiRequest('/supervisors/request', {
+    method: 'POST',
+    body: JSON.stringify({ supervisorId, projectId, message }),
+  }),
+  getMyRequests: () => apiRequest('/supervisors/my-requests'),
+  getPendingRequests: () => apiRequest('/supervisors/pending-requests'),
+  respondToRequest: (requestId, action, response) => apiRequest(`/supervisors/request/${requestId}/respond`, {
+    method: 'PATCH',
+    body: JSON.stringify({ action, response }),
+  }),
 };
 
 export default api;
+
 
