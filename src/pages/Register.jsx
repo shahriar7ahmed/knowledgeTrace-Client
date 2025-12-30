@@ -1,45 +1,41 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
-import showToast from "../utils/toast";
+import { useToast } from "../components/Toast";
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const { createUser, setLoading } = useContext(AuthContext);
+    const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        // Registration logic here
-        const form = e.target;
-        const name = form[0].value;
-        const email = form[1].value;
-        const password = form[2].value;
-        console.log("Registering:", { name, email, password });
-
         try {
             // create user with name
             const result = await createUser(email, password, name);
             if (result.success) {
-                console.log("User created:", result.user);
-                showToast.success("Registration successful! Welcome to KnowledgeTrace.");
-                // Optionally redirect to login or dashboard
+                showToast("Registration successful! Welcome to KnowledgeTrace.", "success");
+                // Navigate to dashboard or login
+                navigate('/dashboard');
             } else {
-                console.error("Registration failed:", result.error);
-                showToast.error(result.error || "Registration failed. Please try again.");
+                showToast(result.error || "Registration failed. Please try again.", "error");
             }
         } catch (error) {
-            console.error("Registration error:", error);
-            showToast.error(error.message || "An error occurred during registration.");
+            showToast(error.message || "An error occurred during registration.", "error");
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 pt-24">
             <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8">
 
                 {/* Title */}
@@ -60,6 +56,10 @@ const Register = () => {
                             type="text"
                             placeholder="Enter your full name"
                             className="input input-bordered w-full"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            autoComplete="name"
+                            required
                         />
                     </div>
 
@@ -70,6 +70,10 @@ const Register = () => {
                             type="email"
                             placeholder="Enter your email"
                             className="input input-bordered w-full"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
+                            required
                         />
                     </div>
 
@@ -80,6 +84,10 @@ const Register = () => {
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter password"
                             className="input input-bordered w-full pr-10"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="new-password"
+                            required
                         />
                         <span
                             onClick={() => setShowPassword(!showPassword)}
@@ -90,7 +98,7 @@ const Register = () => {
                     </div>
 
                     {/* Register Button */}
-                    <button className="btn btn-success w-full text-white">
+                    <button type="submit" className="btn btn-success w-full text-white">
                         Register
                     </button>
 
@@ -98,7 +106,7 @@ const Register = () => {
                     <div className="divider">OR</div>
 
                     {/* Google Login */}
-                    <button className="btn w-full bg-white border border-gray-300 hover:bg-gray-200 text-gray-700">
+                    <button type="button" className="btn w-full bg-white border border-gray-300 hover:bg-gray-200 text-gray-700">
                         Continue with Google
                     </button>
                 </form>
