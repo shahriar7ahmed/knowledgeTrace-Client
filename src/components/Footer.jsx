@@ -49,8 +49,8 @@ const Footer = () => {
                     <ul className="space-y-2 text-sm">
                         <li>Department of Computer Science</li>
                         <li>Faculty of Engineering</li>
-                        <li className="text-gray-400">University Name</li>
-                        <li className="text-gray-400">City, Country</li>
+                        <li className="text-gray-400">International Islamic University Chittagong</li>
+                        <li className="text-gray-400">Chittagong, Bangladesh</li>
                     </ul>
                 </nav>
 
@@ -60,10 +60,10 @@ const Footer = () => {
                     <ul className="space-y-2 text-sm">
                         <li>
                             <a href="mailto:contact@knowledgetrace.edu" className="hover:text-green-400 transition-colors">
-                                contact@knowledgetrace.edu
+                                Email: contact@knowledgetrace.edu
                             </a>
                         </li>
-                        <li className="text-gray-400">+1 (555) 123-4567</li>
+                        <li className="text-gray-400">Mobile: +8801234567890</li>
                         <li className="text-gray-400 mt-4">
                             <a href="#" className="hover:text-green-400 transition-colors">Privacy Policy</a>
                         </li>
