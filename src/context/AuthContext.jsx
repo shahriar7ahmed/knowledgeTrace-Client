@@ -35,12 +35,12 @@ export const AuthProvider = ({ children }) => {
   const fetchUserProfile = async (uid, email, forceRefresh = false) => {
     const now = Date.now();
     const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
-    
+
     // Check cache first (unless force refresh)
     if (!forceRefresh) {
       const cachedUser = localStorage.getItem('knowledgetrace_user');
       const cachedTimestamp = localStorage.getItem('knowledgetrace_user_timestamp');
-      
+
       if (cachedUser && cachedTimestamp) {
         const cacheAge = now - parseInt(cachedTimestamp, 10);
         if (cacheAge < CACHE_DURATION) {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const api = await import('../utils/api');
         const profile = await api.api.getUserProfile();
-        
+
         const userData = {
           uid: profile.uid || uid,
           email: profile.email || email,
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
         // Cache the result
         localStorage.setItem('knowledgetrace_user', JSON.stringify(userData));
         localStorage.setItem('knowledgetrace_user_timestamp', now.toString());
-        
+
         return userData;
       } catch (error) {
         console.warn('Failed to fetch user profile from backend:', error);
@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         // Check if we have cached data first
         const cachedUser = localStorage.getItem('knowledgetrace_user');
         let userData;
-        
+
         if (cachedUser) {
           try {
             const parsed = JSON.parse(cachedUser);
@@ -166,11 +166,11 @@ export const AuthProvider = ({ children }) => {
           // No cache, fetch fresh
           userData = await fetchUserProfile(firebaseUser.uid, firebaseUser.email, false);
         }
-        
+
         // Merge with Firebase user data
         userData.displayName = firebaseUser.displayName || userData.displayName;
         userData.photoURL = firebaseUser.photoURL || userData.photoURL;
-        
+
         setUser(userData);
         setIsAuthenticated(true);
         localStorage.setItem('knowledgetrace_user', JSON.stringify(userData));
@@ -195,7 +195,7 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('Login error:', error);
-      
+
       // Provide user-friendly error messages
       let errorMessage = 'Login failed. Please check your credentials and try again.';
       if (error.code === 'auth/user-not-found') {
@@ -209,7 +209,7 @@ export const AuthProvider = ({ children }) => {
       } else if (error.code === 'auth/network-request-failed') {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
-      
+
       return { success: false, error: errorMessage, code: error.code };
     }
   };
@@ -220,7 +220,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({
-        prompt: 'select_account'
+        prompt: 'select_account',
+        hd: 'ugrad.iiuc.ac.bd' // Hosted domain hint for university email
       });
 
       // Use redirect method (more reliable, avoids COOP issues)
@@ -230,7 +231,7 @@ export const AuthProvider = ({ children }) => {
       return { success: true, redirect: true };
     } catch (error) {
       console.error('Google login error:', error);
-      
+
       // Provide user-friendly error messages
       let errorMessage = 'Google login failed. Please try again.';
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
@@ -240,7 +241,7 @@ export const AuthProvider = ({ children }) => {
       } else if (error.code === 'auth/network-request-failed') {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
-      
+
       return { success: false, error: errorMessage };
     }
   };
@@ -250,12 +251,27 @@ export const AuthProvider = ({ children }) => {
     try {
       const result = await getRedirectResult(auth);
       if (result && result.user) {
+        // Validate university email after OAuth
+        const { validateUniversityEmail } = await import('../utils/emailValidator');
+        const validation = validateUniversityEmail(result.user.email);
+
+        if (!validation.isValid) {
+          console.warn(`⚠️ Google OAuth blocked for non-university email: ${result.user.email}`);
+          // Sign out the user since they don't have a valid email
+          await signOut(auth);
+          return {
+            success: false,
+            error: validation.message,
+            code: 'INVALID_EMAIL_DOMAIN'
+          };
+        }
+
         // Create/update user profile in backend
         // Wait a bit for the token to be fully available
         try {
           // Get a fresh token
           const token = await result.user.getIdToken();
-          
+
           const api = await import('../utils/api');
           await api.api.createUserProfile({
             name: result.user.displayName || result.user.email.split('@')[0],
@@ -278,15 +294,28 @@ export const AuthProvider = ({ children }) => {
   // Firebase signup function
   const signup = async (email, password, name) => {
     try {
+      // Validate university email BEFORE creating Firebase account
+      const { validateUniversityEmail } = await import('../utils/emailValidator');
+      const validation = validateUniversityEmail(email);
+
+      if (!validation.isValid) {
+        console.warn(`⚠️ Signup blocked for non-university email: ${email}`);
+        return {
+          success: false,
+          error: validation.message,
+          code: 'INVALID_EMAIL_DOMAIN'
+        };
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Update user profile with display name
       if (name && userCredential.user) {
         await updateProfile(userCredential.user, {
           displayName: name
         });
       }
-      
+
       // Create user profile in backend
       try {
         const api = await import('../utils/api');
@@ -298,11 +327,11 @@ export const AuthProvider = ({ children }) => {
         console.warn('Failed to create user profile in backend:', apiError);
         // Don't fail signup if backend call fails
       }
-      
+
       return { success: true, user: userCredential.user };
     } catch (error) {
       console.error('Signup error:', error);
-      
+
       // Provide user-friendly error messages
       let errorMessage = 'Signup failed. Please try again.';
       if (error.code === 'auth/email-already-in-use') {
@@ -314,7 +343,7 @@ export const AuthProvider = ({ children }) => {
       } else if (error.code === 'auth/network-request-failed') {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
-      
+
       return { success: false, error: errorMessage, code: error.code };
     }
   };
