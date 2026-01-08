@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
 import '../styles/richTextEditor.css';
 
 /**
@@ -26,12 +25,6 @@ const RichTextEditor = ({
                 codeBlock: false,
                 horizontalRule: false,
                 strike: false,
-            }),
-            Link.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    class: 'text-blue-600 underline',
-                },
             }),
         ],
         content: value || '',
