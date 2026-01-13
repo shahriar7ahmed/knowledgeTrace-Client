@@ -90,11 +90,13 @@ const MyWork = () => {
           navigate('/dashboard');
         }, 2000);
       } else {
-        showToast.error('Error submitting project. Please try again.');
+        // Show specific error message from server
+        const errorMsg = result.error || 'Error submitting project. Please try again.';
+        showToast.error(errorMsg);
       }
     } catch (error) {
       console.error('Submission error:', error);
-      showToast.error('An error occurred. Please try again.');
+      showToast.error(error.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
