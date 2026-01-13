@@ -28,7 +28,7 @@ export const ProjectProvider = ({ children }) => {
     try {
       const api = await import('../utils/api');
       const data = await api.api.getProjects(filters);
-      
+
       setProjects(data);
       setSearchResults(data);
       return data;
@@ -48,16 +48,32 @@ export const ProjectProvider = ({ children }) => {
     try {
       const api = await import('../utils/api');
       const result = await api.api.submitProject(projectData);
-      
+
       if (result.project) {
         // Refresh projects list
         await fetchProjects({});
       }
-      
+
       return { success: true, project: result.project };
     } catch (error) {
       console.error('Error submitting project:', error);
-      return { success: false, error: error.message || 'Failed to submit project' };
+
+      // Extract detailed error message
+      let errorMessage = 'Failed to submit project';
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.details?.message) {
+        errorMessage = error.details.message;
+      } else if (error.details?.errors) {
+        // Handle validation errors
+        const validationErrors = error.details.errors
+          .map(err => err.message)
+          .join(', ');
+        errorMessage = validationErrors;
+      }
+
+      return { success: false, error: errorMessage };
     }
   };
 
