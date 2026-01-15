@@ -35,6 +35,18 @@ const MyWork = () => {
     }));
   };
 
+  // Utility function to strip HTML tags
+  const stripHtml = (html) => {
+    if (!html || typeof html !== 'string') return '';
+    const text = html.replace(/<[^>]*>/g, '');
+    return text.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  };
+
+  // Get plain text length from HTML content
+  const getPlainTextLength = (html) => {
+    return stripHtml(html).length;
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type === 'application/pdf') {
@@ -50,6 +62,14 @@ const MyWork = () => {
     setLoading(true);
 
     try {
+      // Validate abstract length (strip HTML first)
+      const abstractPlainText = stripHtml(formData.abstract);
+      if (abstractPlainText.length < 50) {
+        showToast.error(`Abstract must be at least 50 characters. Current: ${abstractPlainText.length} characters`);
+        setLoading(false);
+        return;
+      }
+
       // Convert tech stack string to array
       const techStackArray = formData.techStack
         .split(',')
@@ -149,9 +169,14 @@ const MyWork = () => {
                   placeholder="Provide a detailed abstract of your project..."
                   className="w-full"
                 />
-                <p className="text-xs text-gray-500 mt-2">
-                  Use the toolbar to format your text (bold, italic, lists, links)
-                </p>
+                <div className="flex justify-between items-center mt-2">
+                  <p className="text-xs text-gray-500">
+                    Use the toolbar to format your text (bold, italic, lists, links)
+                  </p>
+                  <p className={`text-xs font-medium ${getPlainTextLength(formData.abstract) >= 50 ? 'text-green-600' : 'text-red-600'}`}>
+                    {getPlainTextLength(formData.abstract)}/50 characters
+                  </p>
+                </div>
               </div>
 
               <div>

@@ -84,9 +84,27 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
       setLoading(false);
     }
   };
+  const stripHtml = (html) => {
+    if (!html || typeof html !== 'string') return '';
+    // Remove HTML tags
+    let text = html.replace(/<[^>]*>/g, '');
+    // Decode common HTML entities
+    text = text.replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'");
+    // Remove excessive whitespace and trim
+    return text.replace(/\s+/g, ' ').trim();
+  };
+
   const truncateAbstract = (text, maxLength = 150) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    // Strip HTML first
+    const plainText = stripHtml(text);
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substring(0, maxLength) + '...';
   };
 
   return (
@@ -102,9 +120,8 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
         )}
       </h2>
 
-      {/* Abstract */}
       <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-        {showFullDetails ? project.abstract : truncateAbstract(project.abstract)}
+        {showFullDetails ? stripHtml(project.abstract) : truncateAbstract(project.abstract)}
       </p>
 
       {/* Tech Stack Tags */}
@@ -167,8 +184,8 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             onClick={handleLike}
             disabled={loading}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm font-medium ${liked
-                ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              ? 'bg-red-50 text-red-600 hover:bg-red-100'
+              : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             title={liked ? 'Unlike' : 'Like'}
           >
@@ -180,8 +197,8 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             onClick={handleBookmark}
             disabled={loading}
             className={`p-1.5 rounded-lg transition-all duration-200 ${bookmarked
-                ? 'text-yellow-500 hover:bg-yellow-50'
-                : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
+              ? 'text-yellow-500 hover:bg-yellow-50'
+              : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             title={bookmarked ? 'Remove bookmark' : 'Bookmark'}
           >
