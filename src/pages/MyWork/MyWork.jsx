@@ -5,6 +5,7 @@ import { useProjects } from '../../context/ProjectContext';
 import { FaUpload, FaFilePdf } from 'react-icons/fa';
 import showToast from '../../utils/toast';
 import RichTextEditor from '../../components/RichTextEditor';
+import SupervisorSelector from '../../components/SupervisorSelector';
 
 const MyWork = () => {
   const { isAuthenticated, user } = useAuth();
@@ -14,7 +15,7 @@ const MyWork = () => {
     title: '',
     abstract: '',
     techStack: '',
-    supervisor: '',
+    supervisorId: '', // Now stores supervisor ID
     year: new Date().getFullYear().toString(),
     githubLink: '',
   });
@@ -84,6 +85,7 @@ const MyWork = () => {
         tags: [], // Can be enhanced later
         // Ensure githubLink is empty string if not provided, not undefined
         githubLink: formData.githubLink || '',
+        // supervisorId is already in formData
       };
 
       const result = await submitProject(projectData);
@@ -95,7 +97,7 @@ const MyWork = () => {
           title: '',
           abstract: '',
           techStack: '',
-          supervisor: '',
+          supervisorId: '',
           year: new Date().getFullYear().toString(),
           githubLink: '',
         });
@@ -197,36 +199,28 @@ const MyWork = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Supervisor Name
-                  </label>
-                  <input
-                    type="text"
-                    name="supervisor"
-                    value={formData.supervisor}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                    placeholder="e.g., Dr. Jane Smith"
-                  />
-                </div>
+              {/* Supervisor Selector */}
+              <SupervisorSelector
+                selectedSupervisorId={formData.supervisorId}
+                onSelect={(supervisorId) => setFormData(prev => ({ ...prev, supervisorId }))}
+                department={user?.department}
+                required={false}
+              />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Year <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    min="2020"
-                    max={new Date().getFullYear() + 1}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                    required
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Year <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  min="2020"
+                  max={new Date().getFullYear() + 1}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                  required
+                />
               </div>
 
               <div>

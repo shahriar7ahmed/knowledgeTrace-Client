@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaGoogle } from 'react-icons/fa';
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, signup, loginWithGoogle, handleRedirectResult, isAuthenticated, loading: authLoading } = useAuth();
+  const { login, loginWithGoogle, handleRedirectResult, isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   // Redirect to dashboard if already authenticated
@@ -44,17 +42,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      let result;
-      if (isLogin) {
-        result = await login(email, password);
-      } else {
-        if (!name) {
-          setError('Name is required for signup');
-          setLoading(false);
-          return;
-        }
-        result = await signup(email, password, name);
-      }
+      const result = await login(email, password);
 
       if (result.success) {
         if (result.redirect) {
@@ -63,17 +51,12 @@ const Login = () => {
           setLoading(false);
           return;
         }
-        // Login/signup successful - wait for auth state to update
+        // Login successful - wait for auth state to update
         // The useEffect above will automatically navigate when isAuthenticated becomes true
         setLoading(false);
         // Don't navigate here - let the useEffect handle it when auth state updates
       } else {
-        // If email already in use, suggest switching to login mode
-        if (result.code === 'auth/email-already-in-use' && !isLogin) {
-          setError(result.error + ' Click "Sign in" to login with this email.');
-        } else {
-          setError(result.error || 'Authentication failed. Please try again.');
-        }
+        setError(result.error || 'Authentication failed. Please try again.');
         setLoading(false);
       }
     } catch (err) {
@@ -117,12 +100,10 @@ const Login = () => {
               <span className="text-white font-bold text-2xl">K</span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+              Welcome Back
             </h2>
             <p className="text-gray-600">
-              {isLogin
-                ? 'Sign in to your KnowledgeTrace account'
-                : 'Join KnowledgeTrace to share your work'}
+              Sign in to your KnowledgeTrace account
             </p>
           </div>
 
@@ -153,22 +134,6 @@ const Login = () => {
 
           {/* Email/Password Form */}
           <form onSubmit={handleSubmit}>
-            {!isLogin && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                  placeholder="Enter your name"
-                  required={!isLogin}
-                />
-              </div>
-            )}
-
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -190,7 +155,7 @@ const Login = () => {
               </label>
               <input
                 type="password"
-                autoComplete={isLogin ? "current-password" : "new-password"}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
@@ -204,22 +169,20 @@ const Login = () => {
               disabled={loading}
               className="w-full px-4 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
             >
-              {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
+              {loading ? 'Processing...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <button
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError('');
-              }}
-              className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-200"
-            >
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : 'Already have an account? Sign in'}
-            </button>
+            <p className="text-gray-600">
+              Don't have an account?{' '}
+              <Link
+                to="/register"
+                className="text-green-600 hover:text-green-700 font-semibold transition-colors duration-200"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
       </div>

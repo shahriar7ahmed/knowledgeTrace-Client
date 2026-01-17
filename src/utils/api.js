@@ -317,6 +317,20 @@ export const api = {
     method: 'PATCH',
     body: JSON.stringify({ action, response }),
   }),
+
+  // New Supervisor Profile & Dashboard endpoints
+  get: (endpoint) => apiRequest(endpoint),
+  getAllSupervisors: () => apiRequest('/supervisors'),
+  getSupervisorProfile: (supervisorId) => apiRequest(`/supervisors/${supervisorId}/profile`),
+  getSupervisorStats: (supervisorId) => apiRequest(`/supervisors/${supervisorId}/stats`),
+  getSupervisedStudents: (supervisorId) => apiRequest(`/supervisors/${supervisorId}/students`),
+  getSupervisedProjects: (supervisorId, params = {}) => {
+    const queryParams = new URLSearchParams(params).toString();
+    return apiRequest(`/supervisors/${supervisorId}/projects${queryParams ? `?${queryParams}` : ''}`);
+  },
+
+  // User Profile endpoints
+  getPublicUserProfile: (userId) => apiRequest(`/users/${userId}`),
 };
 
 export default api;

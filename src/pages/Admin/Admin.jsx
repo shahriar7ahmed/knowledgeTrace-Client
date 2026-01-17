@@ -16,6 +16,7 @@ import {
   FaCalendarAlt,
   FaUser,
   FaFileAlt,
+  FaFilePdf,
   FaDownload,
   FaSync
 } from 'react-icons/fa';
@@ -488,8 +489,8 @@ const Admin = () => {
                       setActiveTab(tab.id);
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${isActive
-                        ? activeColors[tab.color] || 'bg-blue-500 text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? activeColors[tab.color] || 'bg-blue-500 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                   >
                     <Icon />
@@ -721,10 +722,10 @@ const Admin = () => {
                   <p className="text-sm text-gray-500 mb-1">Status</p>
                   <span
                     className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${{
-                        pending: 'bg-yellow-100 text-yellow-800',
-                        approved: 'bg-green-100 text-green-800',
-                        rejected: 'bg-red-100 text-red-800',
-                      }[selectedProject.status] || 'bg-gray-100 text-gray-800'
+                      pending: 'bg-yellow-100 text-yellow-800',
+                      approved: 'bg-green-100 text-green-800',
+                      rejected: 'bg-red-100 text-red-800',
+                    }[selectedProject.status] || 'bg-gray-100 text-gray-800'
                       }`}
                   >
                     {selectedProject.status?.charAt(0).toUpperCase() + selectedProject.status?.slice(1)}
@@ -774,8 +775,9 @@ const Admin = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors"
+                    title="View PDF in new tab"
                   >
-                    <FaFileAlt />
+                    <FaFilePdf />
                     View PDF
                   </a>
                 )}

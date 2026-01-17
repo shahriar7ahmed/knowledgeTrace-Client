@@ -282,16 +282,25 @@ const ProjectDetails = () => {
             )}
 
             {project.pdfUrl && (
-              <a
-                href={project.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
-              >
-                <FaDownload />
-                Download PDF
-              </a>
+              <>
+                <a
+                  href={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/projects/${project._id || project.id}/pdf/view`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
+                >
+                  <FaFilePdf />
+                  View PDF
+                </a>
+                <a
+                  href={project.pdfUrl}
+                  download={`${project.title.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '_')}.pdf`}
+                  className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
+                >
+                  <FaDownload />
+                  Download PDF
+                </a>
+              </>
             )}
 
             {isOwner && (

@@ -292,7 +292,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Firebase signup function
-  const signup = async (email, password, name) => {
+  const signup = async (email, password, name, role = 'student') => {
     try {
       // Validate university email BEFORE creating Firebase account
       const { validateUniversityEmail } = await import('../utils/emailValidator');
@@ -316,12 +316,13 @@ export const AuthProvider = ({ children }) => {
         });
       }
 
-      // Create user profile in backend
+      // Create user profile in backend WITH ROLE
       try {
         const api = await import('../utils/api');
         await api.api.createUserProfile({
           name: name || email.split('@')[0],
           email: email,
+          role: role, // Pass role to backend
         });
       } catch (apiError) {
         console.warn('Failed to create user profile in backend:', apiError);
@@ -349,8 +350,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Firebase createUser function (alias for signup, used by Register component)
-  const createUser = async (email, password, name) => {
-    return signup(email, password, name);
+  const createUser = async (email, password, name, role = 'student') => {
+    return signup(email, password, name, role);
   };
 
   // Firebase logout function
