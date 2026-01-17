@@ -33,7 +33,7 @@ const SupervisorSelector = ({
         try {
             setLoading(true);
             const response = await api.get('/supervisors');
-            setSupervisors(response.data.supervisors || []);
+            setSupervisors(response.supervisors || []);
         } catch (error) {
             console.error('Error fetching supervisors:', error);
         } finally {

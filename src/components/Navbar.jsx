@@ -62,7 +62,7 @@ const Navbar = () => {
             <>
               <NotificationBell />
               <Link
-                to="/dashboard"
+                to={user?.role === 'supervisor' ? "/supervisor/dashboard" : "/dashboard"}
                 className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200 flex items-center gap-2 text-sm font-medium"
               >
                 <FontAwesomeIcon icon={faUser} className="text-sm" />
@@ -147,7 +147,7 @@ const Navbar = () => {
                     <NotificationBell />
                   </div>
                   <Link
-                    to="/dashboard"
+                    to={user?.role === 'supervisor' ? "/supervisor/dashboard" : "/dashboard"}
                     onClick={() => setOpen(false)}
                     className="block px-6 py-3 text-gray-700 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 font-medium"
                   >
