@@ -160,13 +160,34 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
         {project.author && (
           <div className="flex items-center gap-2">
             <FaUser className="text-royal" />
-            <span>{project.author}</span>
+            {project.authorId ? (
+              <Link
+                to={`/profile/student/${project.authorId}`}
+                className="hover:text-royal hover:underline transition-colors cursor-pointer"
+                title="View student profile"
+              >
+                {project.author}
+              </Link>
+            ) : (
+              <span>{project.author}</span>
+            )}
           </div>
         )}
         {project.supervisor && (
           <div className="flex items-center gap-2">
             <FaGraduationCap className="text-royal" />
-            <span>Supervisor: {project.supervisor}</span>
+            <span>Supervisor: </span>
+            {project.supervisorId ? (
+              <Link
+                to={`/profile/supervisor/${project.supervisorId}`}
+                className="hover:text-royal hover:underline transition-colors cursor-pointer font-medium"
+                title="View supervisor profile"
+              >
+                {project.supervisor}
+              </Link>
+            ) : (
+              <span>{project.supervisor}</span>
+            )}
           </div>
         )}
         {project.year && (
@@ -233,9 +254,10 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium shadow-md hover:shadow-lg"
+            title="View PDF in new tab"
           >
             <FaFilePdf />
-            PDF
+            View PDF
           </a>
         )}
         {!showFullDetails && (

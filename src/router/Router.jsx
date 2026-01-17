@@ -23,6 +23,8 @@ import Admin from "../pages/Admin/Admin";
 import NotFound from "../pages/NotFound/NotFound";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import CollabHub from "../pages/CollabHub/CollabHub";
+import StudentProfile from "../pages/Profile/StudentProfile";
+import SupervisorProfile from "../pages/Profile/SupervisorProfile";
 
 // Root component that wraps everything with providers
 const Root = ({ children }) => {
@@ -75,6 +77,8 @@ const ProjectDetailsWithProviders = createWrappedComponent(ProjectDetails, false
 const AdminWithProviders = createWrappedComponent(Admin, true, true, true); // requireAdmin = true
 const UserProfileWithProviders = createWrappedComponent(UserProfile, false, true); // Public profile, no auth required
 const CollabHubWithProviders = createWrappedComponent(CollabHub, false, false); // Public page
+const StudentProfileWithProviders = createWrappedComponent(StudentProfile, false, true); // Public student profile
+const SupervisorProfileWithProviders = createWrappedComponent(SupervisorProfile, false, true); // Public supervisor profile
 
 // Thesis Management Pages
 const SupervisorDashboard = React.lazy(() => import('../pages/SupervisorDashboard/SupervisorDashboard'));
@@ -188,6 +192,22 @@ const router = createBrowserRouter([
     element: (
       <Root>
         <TeamFinderWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/profile/student/:id",
+    element: (
+      <Root>
+        <StudentProfileWithProviders />
+      </Root>
+    ),
+  },
+  {
+    path: "/profile/supervisor/:id",
+    element: (
+      <Root>
+        <SupervisorProfileWithProviders />
       </Root>
     ),
   },
