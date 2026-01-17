@@ -34,15 +34,15 @@ const SupervisorDashboard = () => {
 
             // Fetch supervisor statistics
             const statsResponse = await api.get(`/supervisors/${user.uid}/stats`);
-            setStats(statsResponse.data.stats);
+            setStats(statsResponse.stats);
 
             // Fetch supervised students
             const studentsResponse = await api.get(`/supervisors/${user.uid}/students`);
-            setStudents(studentsResponse.data.students || []);
+            setStudents(studentsResponse.students || []);
 
             // Fetch supervised projects
             const projectsResponse = await api.get(`/supervisors/${user.uid}/projects?limit=50`);
-            setProjects(projectsResponse.data.projects || []);
+            setProjects(projectsResponse.projects || []);
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
         } finally {

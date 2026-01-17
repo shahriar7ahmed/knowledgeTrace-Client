@@ -19,10 +19,10 @@ const StudentProfile = () => {
         try {
             setLoading(true);
             const response = await api.get(`/users/${id}`);
-            setProfile(response.data.profile);
+            setProfile(response.profile);
         } catch (error) {
             console.error('Error fetching profile:', error);
-            setError(error.response?.data?.message || 'Failed to load profile');
+            setError(error.message || 'Failed to load profile');
         } finally {
             setLoading(false);
         }

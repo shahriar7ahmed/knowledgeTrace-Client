@@ -19,10 +19,10 @@ const SupervisorProfile = () => {
         try {
             setLoading(true);
             const response = await api.get(`/supervisors/${id}/profile`);
-            setProfile(response.data.profile);
+            setProfile(response.profile);
         } catch (error) {
             console.error('Error fetching supervisor profile:', error);
-            setError(error.response?.data?.message || 'Failed to load profile');
+            setError(error.message || 'Failed to load profile');
         } finally {
             setLoading(false);
         }

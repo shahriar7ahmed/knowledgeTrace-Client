@@ -95,6 +95,7 @@ export const AuthProvider = ({ children }) => {
           skills: profile.skills || [],
           github: profile.github || '',
           linkedin: profile.linkedin || '',
+          role: profile.role || 'student',
         };
 
         // Cache the result
@@ -191,6 +192,10 @@ export const AuthProvider = ({ children }) => {
   // Firebase login function
   const login = async (email, password) => {
     try {
+      // Clear cache before login to ensure fresh profile fetch
+      localStorage.removeItem('knowledgetrace_user');
+      localStorage.removeItem('knowledgetrace_user_timestamp');
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       return { success: true, user: userCredential.user };
     } catch (error) {
@@ -306,6 +311,10 @@ export const AuthProvider = ({ children }) => {
           code: 'INVALID_EMAIL_DOMAIN'
         };
       }
+
+      // Clear cache before signup to ensure fresh profile fetch
+      localStorage.removeItem('knowledgetrace_user');
+      localStorage.removeItem('knowledgetrace_user_timestamp');
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 

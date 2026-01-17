@@ -4,15 +4,6 @@
  */
 
 /**
- * Get allowed email domains from environment variables
- * @returns {string[]} Array of allowed domains
- */
-const getAllowedDomains = () => {
-    const domainsEnv = import.meta.env.VITE_ALLOWED_EMAIL_DOMAINS || 'ugrad.iiuc.ac.bd';
-    return domainsEnv.split(',').map(domain => domain.trim().toLowerCase());
-};
-
-/**
  * Check if an email belongs to an allowed university domain
  * @param {string} email - Email address to validate
  * @returns {boolean} True if email is from allowed domain, false otherwise
@@ -23,27 +14,12 @@ export const isUniversityEmail = (email) => {
     }
 
     const emailLower = email.toLowerCase().trim();
-    const allowedDomains = getAllowedDomains();
 
-    // Check if email ends with any of the allowed domains
-    return allowedDomains.some(domain => {
-        // Extract domain from email
-        const emailDomain = emailLower.split('@')[1];
+    // Check both student and supervisor domains
+    const isStudentEmail = emailLower.endsWith('@ugrad.iiuc.ac.bd');
+    const isSupervisorEmail = emailLower.endsWith('@iiuc.ac.bd') && !emailLower.endsWith('@ugrad.iiuc.ac.bd');
 
-        if (!emailDomain) {
-            return false;
-        }
-
-        // Handle both exact match and wildcard domains
-        // e.g., "ugrad.iiuc.ac.bd" or ".edu"
-        if (domain.startsWith('.')) {
-            // Wildcard domain: email must end with this domain
-            return emailDomain.endsWith(domain) || emailDomain === domain.substring(1);
-        } else {
-            // Exact domain match
-            return emailDomain === domain;
-        }
-    });
+    return isStudentEmail || isSupervisorEmail;
 };
 
 /**
@@ -51,14 +27,7 @@ export const isUniversityEmail = (email) => {
  * @returns {string} Error message
  */
 export const getInvalidEmailMessage = () => {
-    const allowedDomains = getAllowedDomains();
-
-    if (allowedDomains.length === 1) {
-        return `Only university student emails are allowed.`;
-    }
-
-    const domainList = allowedDomains.join(', @');
-    return `Only university student emails are allowed.`;
+    return `Only university emails are allowed. Students must use @ugrad.iiuc.ac.bd and supervisors must use @iiuc.ac.bd`;
 };
 
 /**
@@ -82,9 +51,30 @@ export const validateUniversityEmail = (email) => {
 };
 
 /**
+ * Determine role based on email domain
+ * @param {string} email - Email address
+ * @returns {string} 'student' or 'supervisor' or null
+ */
+export const getRoleFromEmail = (email) => {
+    if (!email || typeof email !== 'string') {
+        return null;
+    }
+
+    const emailLower = email.toLowerCase().trim();
+
+    if (emailLower.endsWith('@ugrad.iiuc.ac.bd')) {
+        return 'student';
+    } else if (emailLower.endsWith('@iiuc.ac.bd') && !emailLower.endsWith('@ugrad.iiuc.ac.bd')) {
+        return 'supervisor';
+    }
+
+    return null;
+};
+
+/**
  * Get allowed domains for display purposes
  * @returns {string[]} Array of allowed domains
  */
 export const getAllowedDomainsForDisplay = () => {
-    return getAllowedDomains();
+    return ['@ugrad.iiuc.ac.bd', '@iiuc.ac.bd'];
 };
