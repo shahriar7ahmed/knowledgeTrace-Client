@@ -68,28 +68,12 @@ const Admin = () => {
   const fetchAllProjects = async () => {
     setProjectsLoading(true);
     try {
-      console.log('🔍 Admin: Fetching all projects from admin endpoint...');
-      console.log('👤 Current user:', { uid: user?.uid, email: user?.email, isAdmin: user?.isAdmin });
       const data = await api.getAllProjects();
-      console.log('✅ Admin: Received', data.length, 'projects');
-      console.log('📊 Projects by status:', {
-        pending: data.filter(p => p.status === 'pending').length,
-        approved: data.filter(p => p.status === 'approved').length,
-        rejected: data.filter(p => p.status === 'rejected').length,
-      });
       setProjectsLocal(data);
       // Also update the context for other components
       setProjects(data);
       return data;
     } catch (error) {
-      console.error('❌ Admin: Error fetching all projects:', error);
-      console.error('Error details:', {
-        message: error.message,
-        status: error.status,
-        code: error.code,
-        details: error.details
-      });
-
       let errorMessage = 'Failed to load projects';
       if (error.code === 'FORBIDDEN') {
         errorMessage = 'You do not have admin access. Please contact an administrator.';
@@ -120,31 +104,18 @@ const Admin = () => {
 
   // Filter projects based on active tab
   const filteredProjects = useMemo(() => {
-    console.log('🔍 Filtering projects:', {
-      total: projects.length,
-      activeTab,
-      searchTerm,
-      projectsStatuses: projects.map(p => ({ id: p._id || p.id, status: p.status, title: p.title?.substring(0, 30) }))
-    });
-
     let filtered = projects;
 
     // Filter by status
     if (activeTab !== 'all') {
-      const beforeCount = filtered.length;
       filtered = filtered.filter(p => {
         const matches = p.status === activeTab;
-        if (!matches && p.status) {
-          console.log(`❌ Project ${p._id || p.id} status "${p.status}" doesn't match "${activeTab}"`);
-        }
         return matches;
       });
-      console.log(`📊 Status filter "${activeTab}": ${beforeCount} → ${filtered.length} projects`);
     }
 
     // Filter by search term
     if (searchTerm) {
-      const beforeCount = filtered.length;
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(p =>
         p.title?.toLowerCase().includes(term) ||
@@ -152,7 +123,6 @@ const Admin = () => {
         p.abstract?.toLowerCase().includes(term) ||
         (Array.isArray(p.techStack) && p.techStack.some(tech => String(tech).toLowerCase().includes(term)))
       );
-      console.log(`🔎 Search filter "${searchTerm}": ${beforeCount} → ${filtered.length} projects`);
     }
 
     const sorted = filtered.sort((a, b) => {
@@ -161,19 +131,15 @@ const Admin = () => {
       return dateB - dateA;
     });
 
-    console.log(`✅ Final filtered projects: ${sorted.length}`);
     return sorted;
   }, [projects, activeTab, searchTerm]);
 
   // Calculate statistics
   const stats = useMemo(() => {
-    console.log('📊 Calculating stats from', projects.length, 'projects');
     const pending = projects.filter(p => p.status === 'pending').length;
     const approved = projects.filter(p => p.status === 'approved').length;
     const rejected = projects.filter(p => p.status === 'rejected').length;
     const total = projects.length;
-
-    console.log('📈 Stats calculated:', { pending, approved, rejected, total });
 
     // Projects by month (last 6 months)
     const monthlyData = {};
@@ -219,7 +185,6 @@ const Admin = () => {
   // Handle status change
   const handleStatusChange = async (projectId, newStatus) => {
     if (!projectId) {
-      console.error('Project ID is missing');
       showToast('Error: Project ID is missing', 'error');
       return;
     }
@@ -227,10 +192,7 @@ const Admin = () => {
     setLoading(prev => ({ ...prev, [projectId]: true }));
 
     try {
-      console.log('Updating project status:', { projectId, newStatus });
       const result = await api.updateProjectStatus(projectId, newStatus);
-
-      console.log('Status update result:', result);
 
       if (result) {
         showToast(
@@ -484,10 +446,7 @@ const Admin = () => {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => {
-                      console.log('🔄 Tab clicked:', tab.id);
-                      setActiveTab(tab.id);
-                    }}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${isActive
                       ? activeColors[tab.color] || 'bg-blue-500 text-white shadow-md'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

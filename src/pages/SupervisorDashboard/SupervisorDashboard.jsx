@@ -34,17 +34,24 @@ const SupervisorDashboard = () => {
 
             // Fetch supervisor statistics
             const statsResponse = await api.get(`/supervisors/${user.uid}/stats`);
-            setStats(statsResponse.stats);
+            // API returns { success: true, stats: {...} }
+            setStats(statsResponse.data?.stats || statsResponse.stats || null);
 
             // Fetch supervised students
             const studentsResponse = await api.get(`/supervisors/${user.uid}/students`);
-            setStudents(studentsResponse.students || []);
+            // API returns { success: true, students: [...] }
+            setStudents(studentsResponse.data?.students || studentsResponse.students || []);
 
             // Fetch supervised projects
             const projectsResponse = await api.get(`/supervisors/${user.uid}/projects?limit=50`);
-            setProjects(projectsResponse.projects || []);
+            // API returns { success: true, projects: [...] }
+            setProjects(projectsResponse.data?.projects || projectsResponse.projects || []);
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
+            // Set empty data on error so we don't show loading forever
+            setStats(null);
+            setStudents([]);
+            setProjects([]);
         } finally {
             setLoading(false);
         }

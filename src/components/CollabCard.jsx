@@ -116,7 +116,7 @@ const CollabCard = ({ post }) => {
             <div className="mt-4">
                 <Link
                     to={`/profile/${post.owner?.uid || post.owner?._id || post.owner}`}
-                    className="block w-full text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
+                    className="block w-full text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
                 >
                     View Profile & Contact
                 </Link>

@@ -88,6 +88,14 @@ const MyWork = () => {
         // supervisorId is already in formData
       };
 
+      // DEBUG: Log project data before submission
+      console.log('📝 Submitting project with data:', {
+        title: projectData.title,
+        author: projectData.author,
+        supervisorId: projectData.supervisorId || 'NOT SET',
+        hasPDF: !!projectData.pdfFile
+      });
+
       const result = await submitProject(projectData);
 
       if (result.success) {
@@ -269,7 +277,7 @@ const MyWork = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-xl hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
+                className="flex-1 px-6 py-3.5 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-xl hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold disabled:opacity-50 shadow-md hover:shadow-lg"
               >
                 {loading ? 'Submitting...' : 'Submit Project'}
               </button>

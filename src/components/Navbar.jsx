@@ -88,7 +88,7 @@ const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-royal to-primary-500 text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg font-medium text-sm"
             >
               <FontAwesomeIcon icon={faRightToBracket} className="text-sm" />
               Login
@@ -175,7 +175,7 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setOpen(false)}
-                  className="block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 font-medium mx-4 rounded-lg shadow-md"
+                  className="block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center gap-2 font-medium mx-4 rounded-lg shadow-md"
                 >
                   <FontAwesomeIcon icon={faRightToBracket} />
                   Login

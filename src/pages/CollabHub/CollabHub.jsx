@@ -85,7 +85,7 @@ const CollabHub = () => {
                         {/* Create Post Button */}
                         <button
                             onClick={handleCreatePost}
-                            className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center justify-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                            className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 flex items-center justify-center gap-2 font-semibold shadow-md hover:shadow-lg"
                         >
                             <FaPlus />
                             Create Collaboration Post
@@ -143,7 +143,7 @@ const CollabHub = () => {
                         {isAuthenticated && (
                             <button
                                 onClick={handleCreatePost}
-                                className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 inline-flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                                className="px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 inline-flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
                             >
                                 <FaPlus />
                                 Create First Post

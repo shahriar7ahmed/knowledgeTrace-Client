@@ -162,9 +162,9 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             <FaUser className="text-royal" />
             {project.authorId ? (
               <Link
-                to={`/profile/student/${project.authorId}`}
+                to={`/profile/${project.authorId}`}
                 className="hover:text-royal hover:underline transition-colors cursor-pointer"
-                title="View student profile"
+                title="View author profile"
               >
                 {project.author}
               </Link>
@@ -179,7 +179,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             <span>Supervisor: </span>
             {project.supervisorId ? (
               <Link
-                to={`/profile/supervisor/${project.supervisorId}`}
+                to={`/profile/${project.supervisorId}`}
                 className="hover:text-royal hover:underline transition-colors cursor-pointer font-medium"
                 title="View supervisor profile"
               >
@@ -263,7 +263,7 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
         {!showFullDetails && (
           <Link
             to={`/project/${project._id || project.id}`}
-            className="flex-1 text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
+            className="flex-1 text-center px-4 py-2.5 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg"
           >
             View Details
           </Link>
