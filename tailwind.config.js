@@ -8,35 +8,35 @@ export default {
         extend: {
             colors: {
                 primary: {
-                    50: '#eff6ff',
-                    100: '#dbeafe',
-                    200: '#bfdbfe',
-                    300: '#93c5fd',
-                    400: '#60a5fa',
-                    500: '#3b82f6',
-                    600: '#2563eb', // Royal Blue - Main brand color
-                    700: '#1d4ed8',
-                    800: '#1e40af',
-                    900: '#1e3a8a',
-                    950: '#172554',
+                    50: '#e8f4ed',
+                    100: '#c8e3d4',
+                    200: '#a0ccb8',
+                    300: '#7bb597',
+                    400: '#5c9a7a',
+                    500: '#4a8268',
+                    600: '#3a6b57', // Dark Teal/Green - Main brand color
+                    700: '#2d5546',
+                    800: '#234d3e',
+                    900: '#1a3a2e',
+                    950: '#0f231b',
                 },
                 royal: {
-                    DEFAULT: '#2563eb',
-                    light: '#3b82f6',
-                    dark: '#1d4ed8',
+                    DEFAULT: '#3a6b57',
+                    light: '#4a8268',
+                    dark: '#2d5546',
                 },
                 secondary: {
-                    50: '#faf5ff',
-                    100: '#f3e8ff',
-                    200: '#e9d5ff',
-                    300: '#d8b4fe',
-                    400: '#c084fc',
-                    500: '#a855f7',
-                    600: '#9333ea',
-                    700: '#7e22ce',
-                    800: '#6b21a8',
-                    900: '#581c87',
-                    950: '#3b0764',
+                    50: '#fcfdf4',
+                    100: '#f9fbe7',
+                    200: '#f0f4c3',
+                    300: '#e6ee9c',
+                    400: '#dce775',
+                    500: '#d4e157', // Lime Yellow - Main accent color
+                    600: '#b8c90c',
+                    700: '#96a605',
+                    800: '#7a8700',
+                    900: '#5f6c01',
+                    950: '#3d4500',
                 },
                 success: {
                     50: '#f0fdf4',
@@ -51,7 +51,8 @@ export default {
                     900: '#14532d',
                 },
                 accent: {
-                    green: '#10b981', // For OPEN badges
+                    green: '#4a8268', // For OPEN badges - matching primary theme
+                    lime: '#d4e157', // Lime yellow accent
                 },
                 warning: {
                     50: '#fffbeb',
