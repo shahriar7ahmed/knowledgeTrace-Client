@@ -48,7 +48,6 @@ export const AuthProvider = ({ children }) => {
             const parsedUser = JSON.parse(cachedUser);
             // Only use cache if it matches current user
             if (parsedUser.uid === uid || parsedUser.email === email) {
-              console.log('Using cached user profile');
               return parsedUser;
             }
           } catch (e) {
@@ -325,7 +324,12 @@ export const AuthProvider = ({ children }) => {
         });
       }
 
+      // Get ID token explicitly to ensure we're authenticated
+      const idToken = await userCredential.user.getIdToken(true); // Force refresh
+      console.log('✅ ID token obtained for new user');
+
       // Create user profile in backend WITH ROLE
+      // The ID token ensures the POST /users request is authenticated
       try {
         const api = await import('../utils/api');
         await api.api.createUserProfile({
@@ -333,10 +337,29 @@ export const AuthProvider = ({ children }) => {
           email: email,
           role: role, // Pass role to backend
         });
+        console.log('✅ Backend user profile created successfully');
+
+        // CRITICAL: Fetch the profile immediately to get the role
+        // This ensures the user state has the correct role BEFORE navigation
+        try {
+          const profileData = await api.api.getUserProfile();
+          setUser(profileData);
+          console.log('✅ User profile fetched with role:', profileData.role);
+        } catch (profileError) {
+          console.warn('Failed to fetch profile after creation:', profileError);
+        }
       } catch (apiError) {
-        console.warn('Failed to create user profile in backend:', apiError);
-        // Don't fail signup if backend call fails
+        console.error('❌ Failed to create user profile in backend:', apiError);
+        // If backend profile creation fails, delete the Firebase account to avoid orphaned accounts
+        try {
+          await userCredential.user.delete();
+          console.warn('⚠️ Deleted Firebase account due to backend profile creation failure');
+        } catch (deleteError) {
+          console.error('Failed to delete Firebase account:', deleteError);
+        }
+        throw new Error('Failed to create user profile. Please try again.');
       }
+
 
       return { success: true, user: userCredential.user };
     } catch (error) {

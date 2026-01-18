@@ -74,7 +74,7 @@ const UserProfile = () => {
                         <p className="text-gray-600 mb-6">The user profile you're looking for doesn't exist.</p>
                         <Link
                             to="/"
-                            className="inline-block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold"
+                            className="inline-block px-6 py-3 bg-gradient-to-r from-royal to-primary-500 text-white hover:text-white rounded-lg hover:from-royal-dark hover:to-primary-600 transition-all duration-200 font-semibold"
                         >
                             Go Home
                         </Link>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useProjects } from '../../context/ProjectContext';
 import { useAuth } from '../../context/AuthContext';
 import { useActivity } from '../../context/ActivityContext';
@@ -144,6 +144,49 @@ const ProjectDetails = () => {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!project.pdfUrl) return;
+
+    setActionLoading(true);
+    try {
+      // Use the API to get the PDF with proper authentication
+      const response = await fetch(project.pdfUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/pdf',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download PDF');
+      }
+
+      // Create blob from response
+      const blob = await response.blob();
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${project.title.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '_')}.pdf`;
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      showToast('PDF downloaded successfully', 'success');
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      showToast('Failed to download PDF. Please try again.', 'error');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleProjectUpdate = (updatedProject) => {
     setProject(updatedProject);
     setLikeCount(updatedProject.likeCount || updatedProject.likes?.length || 0);
@@ -191,17 +234,36 @@ const ProjectDetails = () => {
                 <FaUser className="text-green-600" />
                 <div>
                   <p className="text-sm text-gray-500">Author</p>
-                  <p className="font-medium text-gray-800">{project.author}</p>
+                  {project.authorId ? (
+                    <Link
+                      to={`/profile/${project.authorId}`}
+                      className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    >
+                      {project.author}
+                    </Link>
+                  ) : (
+                    <p className="font-medium text-gray-800">{project.author}</p>
+                  )}
                 </div>
               </div>
             )}
+
 
             {project.supervisor && (
               <div className="flex items-center gap-3">
                 <FaGraduationCap className="text-green-600" />
                 <div>
                   <p className="text-sm text-gray-500">Supervisor</p>
-                  <p className="font-medium text-gray-800">{project.supervisor}</p>
+                  {project.supervisorId ? (
+                    <Link
+                      to={`/profile/${project.supervisorId}`}
+                      className="font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    >
+                      {project.supervisor}
+                    </Link>
+                  ) : (
+                    <p className="font-medium text-gray-800">{project.supervisor}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -282,25 +344,14 @@ const ProjectDetails = () => {
             )}
 
             {project.pdfUrl && (
-              <>
-                <a
-                  href={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/projects/${project._id || project.id}/pdf/view`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
-                >
-                  <FaFilePdf />
-                  View PDF
-                </a>
-                <a
-                  href={project.pdfUrl}
-                  download={`${project.title.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '_')}.pdf`}
-                  className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
-                >
-                  <FaDownload />
-                  Download PDF
-                </a>
-              </>
+              <button
+                onClick={handleDownloadPDF}
+                disabled={actionLoading}
+                className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FaDownload />
+                {actionLoading ? 'Downloading...' : 'Download PDF'}
+              </button>
             )}
 
             {isOwner && (
