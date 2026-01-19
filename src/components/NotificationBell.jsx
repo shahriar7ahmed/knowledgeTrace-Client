@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../context/NotificationContext';
-import { FaBell, FaCheck, FaCheckDouble, FaComment, FaReply, FaHeart } from 'react-icons/fa';
+import { FaBell, FaCheck, FaCheckDouble, FaComment, FaReply, FaHeart, FaUserTie, FaUsers, FaFileAlt, FaHandshake } from 'react-icons/fa';
 
 const NotificationBell = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, fetchNotifications } = useNotifications();
@@ -49,6 +49,17 @@ const NotificationBell = () => {
         return <FaReply className="text-green-500" />;
       case 'like':
         return <FaHeart className="text-red-500" />;
+      case 'project_status':
+        return <FaFileAlt className="text-royal" />;
+      case 'project_submission':
+        return <FaFileAlt className="text-orange-500" />;
+      case 'supervisor_request':
+      case 'supervisor_response':
+        return <FaUserTie className="text-purple-500" />;
+      case 'team_invitation':
+        return <FaUsers className="text-teal-500" />;
+      case 'collab_request':
+        return <FaHandshake className="text-indigo-500" />;
       default:
         return <FaBell className="text-gray-500" />;
     }
