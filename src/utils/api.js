@@ -168,6 +168,10 @@ export const api = {
     });
     return apiUpload('/projects', formData);
   },
+  updateProject: (projectId, data) => apiRequest(`/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }),
   updateProjectStatus: (projectId, status) => apiRequest(`/projects/${projectId}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
