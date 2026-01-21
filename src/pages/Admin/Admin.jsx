@@ -728,18 +728,6 @@ const Admin = () => {
                     View GitHub
                   </a>
                 )}
-                {selectedProject.pdfUrl && (
-                  <a
-                    href={selectedProject.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors"
-                    title="View PDF in new tab"
-                  >
-                    <FaFilePdf />
-                    View PDF
-                  </a>
-                )}
                 <button
                   onClick={() => navigate(`/project/${selectedProject._id || selectedProject.id}`)}
                   className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors"

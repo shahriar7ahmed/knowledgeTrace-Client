@@ -248,18 +248,6 @@ const ProjectCard = ({ project, showFullDetails = false, onUpdate }) => {
             GitHub
           </a>
         )}
-        {project.pdfUrl && (
-          <a
-            href={project.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium shadow-md hover:shadow-lg"
-            title="View PDF in new tab"
-          >
-            <FaFilePdf />
-            View PDF
-          </a>
-        )}
         {!showFullDetails && (
           <Link
             to={`/project/${project._id || project.id}`}
