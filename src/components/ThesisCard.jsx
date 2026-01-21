@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { FaUser, FaGraduationCap } from 'react-icons/fa';
 import Button from './Button';
 
 const ThesisCard = ({ project, delay = 0 }) => {
@@ -8,16 +9,41 @@ const ThesisCard = ({ project, delay = 0 }) => {
         _id,
         title,
         description,
+        abstract,
         author,
+        authorId,
+        supervisor,
+        supervisorId,
         tags = [],
         department,
         year,
     } = project;
 
-    // Truncate description to 2 lines (approximately 120 characters)
-    const truncatedDescription = description?.length > 120
-        ? description.substring(0, 120) + '...'
-        : description;
+    // Strip HTML tags from text
+    const stripHtml = (html) => {
+        if (!html || typeof html !== 'string') return '';
+        // Remove HTML tags
+        let text = html.replace(/<[^>]*>/g, '');
+        // Decode common HTML entities
+        text = text.replace(/&nbsp;/g, ' ')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&apos;/g, "'");
+        // Remove excessive whitespace and trim
+        return text.replace(/\s+/g, ' ').trim();
+    };
+
+    // Use abstract if available, fallback to description
+    const contentText = abstract || description || '';
+    const plainText = stripHtml(contentText);
+
+    // Truncate to approximately 2 lines (120 characters)
+    const truncatedText = plainText.length > 120
+        ? plainText.substring(0, 120) + '...'
+        : plainText;
 
     return (
         <motion.div
@@ -28,32 +54,64 @@ const ThesisCard = ({ project, delay = 0 }) => {
             className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
         >
             <div className="p-6">
-                {/* Header with Author */}
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-royal to-primary-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                        {author?.name?.charAt(0) || author?.displayName?.charAt(0) || 'A'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                            {author?.name || author?.displayName || 'Anonymous'}
-                        </p>
-                        {(department || year) && (
-                            <p className="text-xs text-gray-500">
-                                {department} {year && `• ${year}`}
-                            </p>
-                        )}
-                    </div>
-                </div>
-
                 {/* Title */}
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
                     {title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {truncatedDescription}
-                </p>
+                {/* Abstract Preview */}
+                {truncatedText && (
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                        {truncatedText}
+                    </p>
+                )}
+
+                {/* Author and Supervisor Info */}
+                <div className="space-y-2 mb-4 text-sm">
+                    {/* Author */}
+                    {author && (
+                        <div className="flex items-center gap-2">
+                            <FaUser className="text-royal flex-shrink-0" />
+                            {authorId ? (
+                                <Link
+                                    to={`/profile/${authorId}`}
+                                    className="text-gray-900 hover:text-royal hover:underline transition-colors font-medium truncate"
+                                    title="View author profile"
+                                >
+                                    {author}
+                                </Link>
+                            ) : (
+                                <span className="text-gray-900 font-medium truncate">{author}</span>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Supervisor */}
+                    {supervisor && (
+                        <div className="flex items-center gap-2">
+                            <FaGraduationCap className="text-royal flex-shrink-0" />
+                            <span className="text-gray-600 text-xs">Supervisor:</span>
+                            {supervisorId ? (
+                                <Link
+                                    to={`/profile/${supervisorId}`}
+                                    className="text-gray-900 hover:text-royal hover:underline transition-colors font-medium truncate"
+                                    title="View supervisor profile"
+                                >
+                                    {supervisor}
+                                </Link>
+                            ) : (
+                                <span className="text-gray-900 font-medium truncate">{supervisor}</span>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Year */}
+                    {year && (
+                        <div className="text-xs text-gray-500">
+                            Year: {year}
+                        </div>
+                    )}
+                </div>
 
                 {/* Tags */}
                 {tags.length > 0 && (

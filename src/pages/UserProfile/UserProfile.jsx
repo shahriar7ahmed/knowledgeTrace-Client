@@ -32,11 +32,24 @@ const UserProfile = () => {
         try {
             // Fetch user data
             const userResult = await api.getUserById(id);
-            setUserData(userResult.user || userResult);
+            const userData = userResult.user || userResult.profile || userResult;
+            setUserData(userData);
 
-            // Fetch user's projects
-            const projectsResult = await api.getUserProjects(id);
-            setUserProjects(projectsResult.projects || projectsResult || []);
+            // Use projects from the user profile response if available
+            if (userData.projects) {
+                setUserProjects(userData.projects);
+            } else if (userData.recentProjects) {
+                setUserProjects(userData.recentProjects);
+            } else {
+                // Fallback: fetch user's projects separately
+                try {
+                    const projectsResult = await api.getUserProjects(id);
+                    setUserProjects(projectsResult.projects || projectsResult || []);
+                } catch (projError) {
+                    console.warn('Could not fetch projects:', projError);
+                    setUserProjects([]);
+                }
+            }
 
             // Fetch user's collaboration posts
             try {

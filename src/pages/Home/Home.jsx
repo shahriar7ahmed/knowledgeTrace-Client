@@ -9,8 +9,10 @@ import { motion } from 'framer-motion';
 const Home = () => {
     const { projects, loading } = useProjects();
 
-    // Get featured projects (first 6)
-    const featuredProjects = projects?.slice(0, 6) || [];
+    // Get approved projects only (first 6 approved projects)
+    const featuredProjects = projects
+        ?.filter(project => project.status === 'approved')
+        ?.slice(0, 6) || [];
 
     return (
         <div>
@@ -21,7 +23,7 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-10">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                            Featured <span className="text-royal">Theses</span>
+                            <span className="text-royal">Thesis</span> Hub
                         </h2>
                         <p className="text-gray-600">Explore recent academic work from talented students</p>
                     </div>
