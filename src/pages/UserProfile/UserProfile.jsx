@@ -101,103 +101,136 @@ const UserProfile = () => {
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-primary-50/20 pt-24 pb-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
-                    <div className="bg-gradient-to-r from-royal to-primary-500 h-32"></div>
-                    <div className="px-6 md:px-8 pb-8">
-                        <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-16">
+                <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden mb-12 transition-all duration-500 hover:shadow-primary-500/30">
+                    <div className="bg-gradient-to-br from-royal via-primary-600 to-emerald-500 p-8 md:p-14 relative overflow-hidden">
+                        {/* Decorative background elements */}
+                        <div className="absolute -right-10 -top-10 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+                        <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-emerald-400/20 rounded-full blur-2xl"></div>
+
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-14 relative z-10">
                             {/* Profile Picture */}
-                            <div className="relative">
-                                <img
-                                    src={userData.photoURL || 'https://via.placeholder.com/150'}
-                                    alt={userData.name || userData.displayName}
-                                    className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover bg-white"
-                                    onError={(e) => {
-                                        e.target.onerror = null;
-                                        e.target.src = 'https://via.placeholder.com/150';
-                                    }}
-                                />
+                            <div className="relative group">
+                                <div className="w-44 h-44 md:w-60 md:h-60 rounded-[3rem] border-4 border-white/40 backdrop-blur-md shadow-2xl overflow-hidden bg-white/10 group-hover:scale-105 transition-all duration-500 ring-8 ring-white/5">
+                                    <img
+                                        src={userData.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || userData.displayName || 'User')}&background=random&size=256`}
+                                        alt={userData.name || userData.displayName}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://via.placeholder.com/256';
+                                        }}
+                                    />
+                                </div>
+                                <div className="absolute bottom-4 right-4 w-10 h-10 bg-emerald-400 border-4 border-white rounded-full shadow-lg"></div>
                             </div>
 
-                            {/* Name and Headline */}
-                            <div className="flex-1">
-                                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                                    {userData.name || userData.displayName || 'Anonymous User'}
-                                </h1>
-                                <p className="text-lg text-gray-600 mb-4">
-                                    {userData.headline || `${userData.department || 'Student'} at ${userData.year || 'University'}`}
-                                </p>
+                            {/* Info Section */}
+                            <div className="flex-1 text-center md:text-left text-white mt-4 md:mt-2">
+                                <div className="flex flex-col md:flex-row md:items-center gap-5 justify-center md:justify-start">
+                                    <h1 className="text-5xl md:text-8xl font-black tracking-tight drop-shadow-2xl">
+                                        {userData.name || userData.displayName || 'Anonymous User'}
+                                    </h1>
+                                </div>
 
-                                {/* Social Links */}
-                                <div className="flex flex-wrap gap-3">
-                                    {(userData.socialLinks?.github || userData.github) && (
-                                        <a
-                                            href={userData.socialLinks?.github || userData.github}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-200 text-sm font-medium"
+                                <div className="flex flex-col sm:flex-row items-center gap-6 justify-center md:justify-start">
+                                    {/* Action Buttons */}
+                                    {isOwnProfile && (
+                                        <Link
+                                            to="/profile"
+                                            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-royal font-black rounded-2xl hover:bg-gray-100 transition-all shadow-2xl hover:-translate-y-1 active:scale-95 text-xl"
                                         >
-                                            <FaGithub />
-                                            GitHub
-                                        </a>
+                                            <FaEdit className="text-2xl" />
+                                            Edit Profile
+                                        </Link>
                                     )}
-                                    {(userData.socialLinks?.linkedin || userData.linkedin) && (
-                                        <a
-                                            href={userData.socialLinks?.linkedin || userData.linkedin}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm font-medium"
-                                        >
-                                            <FaLinkedin />
-                                            LinkedIn
-                                        </a>
-                                    )}
-                                    {userData.socialLinks?.website && (
-                                        <a
-                                            href={userData.socialLinks.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-4 py-2 bg-royal text-white rounded-lg hover:bg-royal-dark transition-all duration-200 text-sm font-medium"
-                                        >
-                                            <FaGlobe />
-                                            Website
-                                        </a>
-                                    )}
+
+                                    {/* Social Links */}
+                                    <div className="flex flex-wrap gap-4 justify-center">
+                                        {(userData.socialLinks?.github || userData.github) && (
+                                            <a
+                                                href={userData.socialLinks?.github || userData.github}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-5 bg-white/10 backdrop-blur-lg text-white rounded-2xl hover:bg-white/20 transition-all border border-white/20 shadow-xl hover:-translate-y-1"
+                                                title="GitHub"
+                                            >
+                                                <FaGithub size={32} />
+                                            </a>
+                                        )}
+                                        {(userData.socialLinks?.linkedin || userData.linkedin) && (
+                                            <a
+                                                href={userData.socialLinks?.linkedin || userData.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-5 bg-white/10 backdrop-blur-lg text-white rounded-2xl hover:bg-white/20 transition-all border border-white/20 shadow-xl hover:-translate-y-1"
+                                                title="LinkedIn"
+                                            >
+                                                <FaLinkedin size={32} />
+                                            </a>
+                                        )}
+                                        {(userData.socialLinks?.website) && (
+                                            <a
+                                                href={userData.socialLinks.website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-5 bg-white/10 backdrop-blur-lg text-white rounded-2xl hover:bg-white/20 transition-all border border-white/20 shadow-xl hover:-translate-y-1"
+                                                title="Website"
+                                            >
+                                                <FaGlobe size={32} />
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Edit Button (only for own profile) */}
-                            {isOwnProfile && (
-                                <Link
-                                    to="/profile"
-                                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 font-medium text-sm"
-                                >
-                                    <FaEdit />
-                                    Edit Profile
-                                </Link>
-                            )}
+                    {/* Quick Stats Section */}
+                    <div className="bg-gray-50/50 px-8 py-6 border-t border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center md:text-left">
+                            <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Projects</p>
+                            <p className="text-2xl font-black text-gray-900">{userProjects.length}</p>
+                        </div>
+                        <div className="text-center md:text-left">
+                            <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Collabs</p>
+                            <p className="text-2xl font-black text-gray-900">{userCollabPosts.length}</p>
+                        </div>
+                        <div className="text-center md:text-left">
+                            <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Experience</p>
+                            <p className="text-2xl font-black text-gray-900">{userData.year || 'N/A'}</p>
+                        </div>
+                        <div className="text-center md:text-left">
+                            <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Department</p>
+                            <p className="text-2xl font-black text-gray-900 truncate" title={userData.department}>{userData.department || 'N/A'}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Bio and Skills Section */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     {/* Bio */}
                     {userData.bio && (
-                        <div className="md:col-span-2 bg-white rounded-2xl shadow-md border border-gray-100 p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-3">About</h2>
-                            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{userData.bio}</p>
+                        <div className="md:col-span-2 bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10 transition-all hover:shadow-2xl">
+                            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-royal rounded-full"></span>
+                                About Me
+                            </h2>
+                            <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-wrap font-medium">{userData.bio}</p>
                         </div>
                     )}
 
                     {/* Skills */}
                     {userData.skills && userData.skills.length > 0 && (
-                        <div className={`bg-white rounded-2xl shadow-md border border-gray-100 p-6 ${!userData.bio ? 'md:col-span-3' : ''}`}>
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">Skills</h2>
-                            <div className="flex flex-wrap gap-2">
+                        <div className={`bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10 transition-all hover:shadow-2xl ${!userData.bio ? 'md:col-span-3' : ''}`}>
+                            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-emerald-500 rounded-full"></span>
+                                Expertise
+                            </h2>
+                            <div className="flex flex-wrap gap-3">
                                 {userData.skills.map((skill, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-3 py-1.5 bg-primary-100 text-primary-700 text-sm rounded-full font-semibold border border-primary-200"
+                                        className="px-5 py-2.5 bg-primary-100 text-primary-700 text-sm rounded-2xl font-bold border border-primary-200 shadow-sm transition-all hover:scale-105"
                                     >
                                         {skill}
                                     </span>
@@ -208,57 +241,65 @@ const UserProfile = () => {
                 </div>
 
                 {/* Tabbed Content */}
-                <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+                <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden transition-all hover:shadow-primary-500/10">
                     {/* Tab Headers */}
-                    <div className="border-b border-gray-200">
-                        <div className="flex">
+                    <div className="border-b border-gray-100 p-2">
+                        <div className="flex gap-2">
                             <button
                                 onClick={() => setActiveTab('projects')}
-                                className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === 'projects'
-                                    ? 'text-royal border-b-2 border-royal bg-primary-50'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                className={`flex-1 px-8 py-5 text-lg font-black rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${activeTab === 'projects'
+                                    ? 'text-royal bg-royal/10 shadow-inner'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
-                                <FaProjectDiagram />
-                                My Projects ({userProjects.length})
+                                <FaProjectDiagram className="text-2xl" />
+                                Projects ({userProjects.length})
                             </button>
                             <button
                                 onClick={() => setActiveTab('collabs')}
-                                className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === 'collabs'
-                                    ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                className={`flex-1 px-8 py-5 text-lg font-black rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${activeTab === 'collabs'
+                                    ? 'text-emerald-600 bg-emerald-50 shadow-inner'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
-                                <FaHandshake />
-                                Collaboration Requests ({userCollabPosts.length})
+                                <FaHandshake className="text-2xl" />
+                                Collabs ({userCollabPosts.length})
                             </button>
                         </div>
                     </div>
 
                     {/* Tab Content */}
-                    <div className="p-6">
+                    <div className="p-8 md:p-12">
                         {activeTab === 'projects' ? (
                             userProjects.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {userProjects.map((project) => (
                                         <ProjectCard key={project._id || project.id} project={project} />
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-center py-12">
-                                    <p className="text-gray-500">No projects submitted yet.</p>
+                                <div className="text-center py-24 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                                    <div className="text-6xl mb-6">🚀</div>
+                                    <p className="text-2xl font-bold text-gray-400 leading-relaxed">
+                                        No projects showcased yet.<br />
+                                        <span className="text-lg font-medium">The journey begins with the first line of code.</span>
+                                    </p>
                                 </div>
                             )
                         ) : (
                             userCollabPosts.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {userCollabPosts.map((post) => (
                                         <CollabCard key={post._id || post.id} post={post} />
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-center py-12">
-                                    <p className="text-gray-500">No collaboration requests posted yet.</p>
+                                <div className="text-center py-24 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                                    <div className="text-6xl mb-6">🤝</div>
+                                    <p className="text-2xl font-bold text-gray-400 leading-relaxed">
+                                        No active collaborations.<br />
+                                        <span className="text-lg font-medium">Collaboration is the heart of innovation.</span>
+                                    </p>
                                 </div>
                             )
                         )}
