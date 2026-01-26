@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProjects } from '../../context/ProjectContext';
@@ -64,14 +64,36 @@ const Admin = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // Prevent duplicate requests and excessive re-fetching
+  const fetchInProgressRef = useRef(false);
+  const dataFetchedRef = useRef(false);
+  const lastFetchTimeRef = useRef(0);
+
   // Fetch all projects for admin (using admin endpoint)
-  const fetchAllProjects = async () => {
+  const fetchAllProjects = async (force = false) => {
+    // Prevent duplicate simultaneous requests
+    if (fetchInProgressRef.current && !force) {
+      console.log('⏳ Fetch already in progress, skipping duplicate request');
+      return;
+    }
+
+    // Implement basic caching - don't refetch if data was fetched recently (within 30 seconds)
+    const now = Date.now();
+    const timeSinceLastFetch = now - lastFetchTimeRef.current;
+    if (!force && dataFetchedRef.current && timeSinceLastFetch < 30000) {
+      console.log('✅ Using cached data (fetched', Math.round(timeSinceLastFetch / 1000), 'seconds ago)');
+      return;
+    }
+
+    fetchInProgressRef.current = true;
     setProjectsLoading(true);
     try {
       const data = await api.getAllProjects();
       setProjectsLocal(data);
       // Also update the context for other components
       setProjects(data);
+      dataFetchedRef.current = true;
+      lastFetchTimeRef.current = now;
       return data;
     } catch (error) {
       let errorMessage = 'Failed to load projects';
@@ -90,17 +112,22 @@ const Admin = () => {
       return [];
     } finally {
       setProjectsLoading(false);
+      fetchInProgressRef.current = false;
     }
   };
 
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || !user?.isAdmin)) {
-      return;
+    // Only fetch if authenticated and user is admin
+    if (!authLoading && isAuthenticated && user?.isAdmin) {
+      // Only fetch if we haven't fetched data yet
+      if (!dataFetchedRef.current) {
+        fetchAllProjects();
+      }
     }
-    // Fetch all projects using admin endpoint
-    fetchAllProjects();
+    // NOTE: Intentionally NOT including user?.isAdmin in dependencies
+    // to prevent re-fetching when user object updates due to AuthContext caching
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authLoading, isAuthenticated, user?.isAdmin]);
+  }, [authLoading, isAuthenticated]);
 
   // Filter projects based on active tab
   const filteredProjects = useMemo(() => {
@@ -199,8 +226,8 @@ const Admin = () => {
           `Project ${newStatus === 'approved' ? 'approved' : newStatus === 'rejected' ? 'rejected' : 'updated'} successfully!`,
           'success'
         );
-        // Refresh projects using admin endpoint
-        await fetchAllProjects();
+        // Refresh projects using admin endpoint (force refresh)
+        await fetchAllProjects(true);
       } else {
         showToast('Failed to update project status', 'error');
       }
@@ -322,7 +349,7 @@ const Admin = () => {
               <p className="text-gray-600">Manage and monitor all project submissions</p>
             </div>
             <button
-              onClick={() => fetchAllProjects()}
+              onClick={() => fetchAllProjects(true)} // Force refresh when user clicks button
               disabled={projectsLoading}
               className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-green-600 disabled:opacity-50"
             >

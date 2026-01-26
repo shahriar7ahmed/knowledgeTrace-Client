@@ -35,6 +35,10 @@ const getAuthToken = async () => {
   }
 };
 
+// Request cache to prevent duplicate API calls
+const requestCache = new Map();
+const ongoingRequests = new Map();
+
 // Generic API request function with retry logic for rate limiting
 const apiRequest = async (endpoint, options = {}, retries = 2) => {
   const token = await getAuthToken();
@@ -178,9 +182,41 @@ export const api = {
   }),
   getUserProjects: (userId) => apiRequest(`/projects/user/${userId}`),
 
-  // Admin endpoints
+  // Admin endpoints with caching
   getPendingProjects: () => apiRequest('/admin/projects/pending'),
-  getAllProjects: () => apiRequest('/admin/projects'),
+  getAllProjects: async () => {
+    const cacheKey = 'admin_all_projects';
+    const now = Date.now();
+
+    // Check if there's an ongoing request for this endpoint
+    if (ongoingRequests.has(cacheKey)) {
+      console.log('⏳ Reusing ongoing request for getAllProjects');
+      return ongoingRequests.get(cacheKey);
+    }
+
+    // Check cache (30 second TTL)
+    const cached = requestCache.get(cacheKey);
+    if (cached && (now - cached.timestamp) < 30000) {
+      console.log('✅ Using cached getAllProjects data');
+      return cached.data;
+    }
+
+    // Make the request and store promise to prevent duplicates
+    const requestPromise = apiRequest('/admin/projects')
+      .then(data => {
+        // Cache the result
+        requestCache.set(cacheKey, { data, timestamp: now });
+        ongoingRequests.delete(cacheKey);
+        return data;
+      })
+      .catch(error => {
+        ongoingRequests.delete(cacheKey);
+        throw error;
+      });
+
+    ongoingRequests.set(cacheKey, requestPromise);
+    return requestPromise;
+  },
 
   // Engagement endpoints
   toggleLike: (projectId) => apiRequest(`/projects/${projectId}/like`, {
